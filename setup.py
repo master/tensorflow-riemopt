@@ -1,0 +1,30 @@
+from pathlib import Path
+from setuptools import setup, find_packages
+
+setup(
+    name="tensorflow-manopt",
+    version="0.1.0",
+    description="A library for manifold-constrained optimization in TensorFlow",
+    author="Oleg Smirnov",
+    author_email="oleg.smirnov@gmail.com",
+    packages=find_packages(),
+    install_requires=Path("requirements.txt").read_text().splitlines(),
+    python_requires=">=3.5.0",
+    url="https://github.com/master/tensorflow-manopt",
+    zip_safe=True,
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Topic :: Scientific/Engineering :: Mathematics",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: Software Development :: Libraries",
+        "Operating System :: OS Independent",
+    ],
+    keywords="tensorflow optimization machine learning",
+)
