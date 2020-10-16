@@ -3,6 +3,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/tensorflow-manopt.svg)](https://pypi.org/project/tensorflow-manopt/)
 [![DOI](https://zenodo.org/badge/298014876.svg)](https://zenodo.org/badge/latestdoi/298014876)
 [![Build Status](https://travis-ci.org/master/tensorflow-manopt.svg?branch=master)](https://travis-ci.org/master/tensorflow-manopt)
+[![Coverage Status](https://coveralls.io/repos/github/master/tensorflow-manopt/badge.svg?branch=master)](https://coveralls.io/github/master/tensorflow-manopt?branch=master)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![License](https://img.shields.io/:license-mit-blue.svg)](https://badges.mit-license.org)
 

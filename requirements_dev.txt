@@ -1,2 +1,4 @@
 pip>=20.0.0
 black
+coveralls
+pytest-cov

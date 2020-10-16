@@ -10,4 +10,6 @@ install:
   - python setup.py develop
 script:
   - black --line-length 80 --check --diff tensorflow_manopt
-  - pytest -v tensorflow_manopt
+  - pytest -v tensorflow_manopt --cov tensorflow_manopt
+after_success:
+  - coveralls
