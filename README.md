@@ -1,6 +1,7 @@
 # TensorFlow ManOpt
 
 [![PyPI version](https://img.shields.io/pypi/v/tensorflow-manopt.svg)](https://pypi.org/project/tensorflow-manopt/)
+[![DOI](https://zenodo.org/badge/298014876.svg)](https://zenodo.org/badge/latestdoi/298014876)
 [![Build Status](https://travis-ci.org/master/tensorflow-manopt.svg?branch=master)](https://travis-ci.org/master/tensorflow-manopt)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![License](https://img.shields.io/:license-mit-blue.svg)](https://badges.mit-license.org)
@@ -81,6 +82,24 @@ optimizers for sparse and dense updates in both Eager and Graph modes.
  - [GrNet](examples/grnet/) - Huang, Zhiwu, Jiqing Wu, and Luc Van Gool. "Building Deep Networks on Grassmann Manifolds." AAAI. AAAI Press, 2018.
  - [Hyperbolic Neural Network](examples/hyperbolic_nn/) - Ganea, Octavian, Gary Bécigneul, and Thomas Hofmann. "Hyperbolic neural networks." Advances in neural information processing systems. 2018.
  - [Poincaré GloVe](examples/poincare_glove/) - Tifrea, Alexandru, Gary Becigneul, and Octavian-Eugen Ganea. "Poincaré Glove: Hyperbolic Word Embeddings." International Conference on Learning Representations. 2018.
+
+## References
+
+ If you find TensorFlow ManOpt useful in your research, please cite:
+
+```
+@software{tfmanopt2020smirnov,
+  author       = {Oleg Smirnov},
+  title        = {{TensorFlow ManOpt: a library for manifold-constrained optimization in TensorFlow}},
+  month        = oct,
+  year         = 2020,
+  publisher    = {Zenodo},
+  version      = {v0.1.0},
+  doi          = {10.5281/zenodo.4094937},
+  url          = {https://doi.org/10.5281/zenodo.4094937}
+}
+
+```
 
 ## Acknowledgment
 
