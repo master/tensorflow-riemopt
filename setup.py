@@ -5,6 +5,8 @@ setup(
     name="tensorflow-manopt",
     version="0.1.0",
     description="A library for manifold-constrained optimization in TensorFlow",
+    long_description=open("README.md", "r").read(),
+    long_description_content_type="text/markdown",
     author="Oleg Smirnov",
     author_email="oleg.smirnov@gmail.com",
     packages=find_packages(),
