@@ -9,7 +9,7 @@ setup(
     author_email="oleg.smirnov@gmail.com",
     packages=find_packages(),
     install_requires=Path("requirements.txt").read_text().splitlines(),
-    python_requires=">=3.5.0",
+    python_requires=">=3.6.0",
     url="https://github.com/master/tensorflow-manopt",
     zip_safe=True,
     classifiers=[
@@ -17,7 +17,6 @@ setup(
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",

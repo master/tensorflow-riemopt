@@ -1,0 +1,13 @@
+dist: bionic
+language: python
+python:
+  - "3.6"
+  - "3.7"
+  - "3.8"
+os: linux
+install:
+  - pip install -r requirements_dev.txt
+  - python setup.py develop
+script:
+  - black --line-length 80 --check --diff tensorflow_manopt
+  - pytest -v tensorflow_manopt

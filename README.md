@@ -1,5 +1,7 @@
 # TensorFlow ManOpt
 
+[![Build Status](https://travis-ci.org/master/tensorflow-manopt.svg?branch=master)](https://travis-ci.org/master/tensorflow-manopt)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![License](https://img.shields.io/:license-mit-blue.svg)](https://badges.mit-license.org)
 
 A library for manifold-constrained optimization in TensorFlow.

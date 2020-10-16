@@ -6,10 +6,10 @@ Implementation of SPDNet [1], a Riemannian network for SPD matrix learning.
 
 ## Requirements
 
- * Python 3.5+
+ * Python 3.6+
  * SciPy
  * NumPy
- * TensorFlow 2.3+
+ * TensorFlow 2.0+
  * TensorFlow ManOpt
 
 ## Training
