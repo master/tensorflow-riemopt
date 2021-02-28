@@ -4,7 +4,7 @@ import os
 import tensorflow as tf
 
 import model
-from examples.shared import utils
+from shared import utils
 
 DATA_URL = "https://data.vision.ee.ethz.ch/zzhiwu/ManifoldNetData/GrData/AFEW_Gr_data.zip"
 DATA_FOLDER = "grface_400_inter_histeq"

@@ -5,7 +5,7 @@ import tensorflow as tf
 import numpy as np
 
 import model
-from examples.shared import utils
+from shared import utils
 
 DATA_URL = "https://data.vision.ee.ethz.ch/zzhiwu/ManifoldNetData/LieData/G3D_Lie_data.zip"
 DATA_FOLDER = "lie20_half_inter1"
