@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 import os
-import sys
 import tensorflow as tf
 import numpy as np
 
@@ -14,8 +13,8 @@ G3D_CLASSES = 20
 VAL_SPLIT = 0.2
 
 
-def get_args(args):
-    parser = argparse.ArgumentParser(args)
+def get_args():
+    parser = argparse.ArgumentParser()
     parser.add_argument(
         '--job-dir', type=str, required=True, help='checkpoint dir'
     )
@@ -91,5 +90,4 @@ def train_and_evaluate(args):
 
 if __name__ == "__main__":
     tf.get_logger().setLevel("INFO")
-    argv = sys.argv[1:]
-    train_and_evaluate(get_args(argv))
+    train_and_evaluate(get_args())
