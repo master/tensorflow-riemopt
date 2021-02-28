@@ -3,8 +3,8 @@ import argparse
 import os
 import tensorflow as tf
 
-from . import model
-from shared import utils
+import model
+from examples.shared import utils
 
 DATA_URL = "https://data.vision.ee.ethz.ch/zzhiwu/ManifoldNetData/GrData/AFEW_Gr_data.zip"
 DATA_FOLDER = "grface_400_inter_histeq"
