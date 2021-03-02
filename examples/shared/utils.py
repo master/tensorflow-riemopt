@@ -42,4 +42,4 @@ def load_matlab_data(key, data_dir, *folders):
     for filename in glob.glob(os.path.join(*folders)):
         examples.append(scipy.io.loadmat(filename)[key])
         labels.append(int(filename.split("/")[-2]))
-    return np.stack(examples), np.array(labels)
+    return np.stack(examples), np.array(labels) - 1

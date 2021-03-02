@@ -4,7 +4,7 @@ import os
 import tensorflow as tf
 import numpy as np
 
-from . import model
+import model
 from shared import utils
 
 DATA_URL = "https://data.vision.ee.ethz.ch/zzhiwu/ManifoldNetData/LieData/G3D_Lie_data.zip"
@@ -46,7 +46,7 @@ def get_args():
     return parser.parse_args()
 
 
-def prepare_data():
+def prepare_data(args):
     features, labels = utils.load_matlab_data("fea", args.data_dir, DATA_FOLDER)
     features = np.array([np.stack(example) for example in features.squeeze()])
     # reshape to [batch_size, spatial_dim, temp_dim, num_rows, num_cols]
@@ -61,7 +61,7 @@ def prepare_data():
 
 def train_and_evaluate(args):
     utils.download_data(args.data_dir, DATA_URL, unpack=True)
-    train, val = prepare_data()
+    train, val = prepare_data(args)
 
     train_dataset = (
         tf.data.Dataset.from_tensor_slices(train)

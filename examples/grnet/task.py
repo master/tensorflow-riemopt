@@ -3,7 +3,7 @@ import argparse
 import os
 import tensorflow as tf
 
-from . import model
+import model
 from shared import utils
 
 DATA_URL = "https://data.vision.ee.ethz.ch/zzhiwu/ManifoldNetData/GrData/AFEW_Gr_data.zip"
