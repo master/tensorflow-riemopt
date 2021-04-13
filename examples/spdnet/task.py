@@ -59,15 +59,20 @@ def train_and_evaluate(args):
     )
 
     spdnet = model.create_model(args.learning_rate, num_classes=AFEW_CLASSES)
+
+    os.makedirs(args.job_dir, exist_ok=True)
     checkpoint_path = os.path.join(args.job_dir, "afew-spdnet.ckpt")
     cp_callback = tf.keras.callbacks.ModelCheckpoint(
         filepath=checkpoint_path, save_weights_only=True, verbose=1
     )
+    log_dir = os.path.join(args.job_dir, "logs")
+    tb_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
+
     spdnet.fit(
         train_dataset,
         epochs=args.num_epochs,
         validation_data=val_dataset,
-        callbacks=[cp_callback],
+        callbacks=[cp_callback, tb_callback],
     )
     _, acc = spdnet.evaluate(val_dataset, verbose=2)
     print("Final accuracy: {}%".format(acc * 100))
