@@ -95,7 +95,7 @@ class Poincare(Manifold):
 
     def norm(self, x, u, keepdims=False):
         lambda_x = self._lambda(x, keepdims=keepdims)
-        return tf.linarg.norm(u, axis=-1, keepdims=keepdims) * lambda_x
+        return tf.linalg.norm(u, axis=-1, keepdims=keepdims) * lambda_x
 
     def proju(self, x, u):
         lambda_x = self._lambda(x, keepdims=True)
