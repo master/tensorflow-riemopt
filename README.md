@@ -89,18 +89,14 @@ optimizers for sparse and dense updates in both Eager and Graph modes.
  If you find TensorFlow ManOpt useful in your research, please cite:
 
 ```
-@software{tfmanopt2020smirnov,
-  author       = {Oleg Smirnov},
-  title        = {{TensorFlow ManOpt: a library for manifold-
-                   constrained optimization in TensorFlow}},
-  month        = oct,
-  year         = 2020,
-  publisher    = {Zenodo},
-  version      = {v0.1.0},
-  doi          = {10.5281/zenodo.4094937},
-  url          = {https://doi.org/10.5281/zenodo.4094937}
+@misc{smirnov2021tensorflow,
+      title={TensorFlow ManOpt: a library for optimization on Riemannian manifolds},
+      author={Oleg Smirnov},
+      year={2021},
+      eprint={2105.13921},
+      archivePrefix={arXiv},
+      primaryClass={cs.MS}
 }
-
 ```
 
 ## Acknowledgment
