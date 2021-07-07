@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/tensorflow-riemopt.svg)](https://pypi.org/project/tensorflow-riemopt/)
 [![arXiv](https://img.shields.io/badge/arXiv-2105.13921-b31b1b.svg)](https://arxiv.org/abs/2105.13921)
 [![Build Status](https://github.com/master/tensorflow-riemopt/actions/workflows/build.yml/badge.svg)](https://github.com/master/tensorflow-riemopt/actions)
-[![Coverage Status](https://coveralls.io/repos/github/master/tensorflow-riemopt/badge.svg?branch=master)](https://coveralls.io/github/master/tensorflow-riemopt?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/master/tensorflow-riemopt/badge.svg)](https://coveralls.io/github/master/tensorflow-riemopt)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![License](https://img.shields.io/:license-mit-blue.svg)](https://badges.mit-license.org)
 
