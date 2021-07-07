@@ -25,8 +25,9 @@ jobs:
         black --line-length 80 --check --diff tensorflow_riemopt
     - name: Test with pytest
       run: |
-        pytest -v tensorflow_riemopt --cov tensorflow_manopt
+        pytest -v tensorflow_riemopt --cov tensorflow_riemopt
     - name: Publish to coveralls.io
-      uses: coverallsapp/github-action@v1.1.2
-      with:
-        github-token: ${{ github.token }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        coveralls --service=github
