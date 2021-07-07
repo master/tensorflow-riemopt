@@ -2,7 +2,7 @@
 
 Implementation of GrNet [1], a deep network on Grassmann manifolds.
 
-<img align="center" width="800" src="https://github.com/master/tensorflow-manopt/blob/master/examples/grnet/grnet.png?raw=true">
+<img align="center" width="800" src="https://github.com/master/tensorflow-riemopt/blob/master/examples/grnet/grnet.png?raw=true">
 
 ## Requirements
 

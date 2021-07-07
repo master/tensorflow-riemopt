@@ -1,9 +1,9 @@
 import tensorflow as tf
 
-from tensorflow_manopt.variable import assign_to_manifold
-from tensorflow_manopt.manifolds import SpecialOrthogonal
-from tensorflow_manopt.manifolds import utils
-from tensorflow_manopt.optimizers import RiemannianSGD
+from tensorflow_riemopt.variable import assign_to_manifold
+from tensorflow_riemopt.manifolds import SpecialOrthogonal
+from tensorflow_riemopt.manifolds import utils
+from tensorflow_riemopt.optimizers import RiemannianSGD
 
 
 EPS = 1e-7

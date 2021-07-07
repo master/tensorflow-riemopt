@@ -1,2 +1,2 @@
 scipy
-tensorflow-manopt
+tensorflow-riemopt

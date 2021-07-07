@@ -1,9 +1,9 @@
-# TensorFlow ManOpt
+# TensorFlow RiemOpt
 
-[![PyPI version](https://img.shields.io/pypi/v/tensorflow-manopt.svg)](https://pypi.org/project/tensorflow-manopt/)
-[![DOI](https://zenodo.org/badge/298014876.svg)](https://zenodo.org/badge/latestdoi/298014876)
-[![Build Status](https://travis-ci.org/master/tensorflow-manopt.svg?branch=master)](https://travis-ci.org/master/tensorflow-manopt)
-[![Coverage Status](https://coveralls.io/repos/github/master/tensorflow-manopt/badge.svg?branch=master)](https://coveralls.io/github/master/tensorflow-manopt?branch=master)
+[![PyPI](https://img.shields.io/pypi/v/tensorflow-riemopt.svg)](https://pypi.org/project/tensorflow-riemopt/)
+[![arXiv](https://img.shields.io/badge/arXiv-2105.13921-b31b1b.svg)](https://arxiv.org/abs/2105.13921)
+[![Build Status](https://github.com/master/tensorflow-riemopt/actions/workflows/build.yml/badge.svg)](https://github.com/master/tensorflow-riemopt/actions)
+[![Coverage Status](https://coveralls.io/repos/github/master/tensorflow-riemopt/badge.svg?branch=master)](https://coveralls.io/github/master/tensorflow-riemopt?branch=master)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![License](https://img.shields.io/:license-mit-blue.svg)](https://badges.mit-license.org)
 
@@ -14,13 +14,13 @@ A library for manifold-constrained optimization in TensorFlow.
 To install the latest development version from GitHub:
 
 ```bash
-pip install git+https://github.com/master/tensorflow-manopt.git
+pip install git+https://github.com/master/tensorflow-riemopt.git
 ```
 
 To install a package from PyPI:
 
 ```bash
-pip install tensorflow-manopt
+pip install tensorflow-riemopt
 ```
 
 ## Features
@@ -30,10 +30,12 @@ manifolds and Riemannian metrics with associated exponential and logarithmic
 maps, geodesics, retractions, and transports. For manifolds, where closed-form
 expressions are not available, the library provides numerical approximations.
 
-<img align="right" width="400" src="https://github.com/master/tensorflow-manopt/blob/master/examples/usage.png?raw=true">
+<img align="right" width="400" src="https://github.com/master/tensorflow-riemopt/blob/master/examples/usage.png?raw=true">
 
 ```python
-S = manopt.manifolds.Sphere()
+import tensorflow_riemopt as riemopt
+
+S = riemopt.manifolds.Sphere()
 
 x = S.projx(tf.constant([0.1, -0.1, 0.1]))
 u = S.proju(x, tf.constant([1., 1., 1.]))
@@ -86,11 +88,11 @@ optimizers for sparse and dense updates in both Eager and Graph modes.
 
 ## References
 
- If you find TensorFlow ManOpt useful in your research, please cite:
+ If you find TensorFlow RiemOpt useful in your research, please cite:
 
 ```
 @misc{smirnov2021tensorflow,
-      title={TensorFlow ManOpt: a library for optimization on Riemannian manifolds},
+      title={TensorFlow RiemOpt: a library for optimization on Riemannian manifolds},
       author={Oleg Smirnov},
       year={2021},
       eprint={2105.13921},
@@ -101,7 +103,7 @@ optimizers for sparse and dense updates in both Eager and Graph modes.
 
 ## Acknowledgment
 
- TensorFlow ManOpt was inspired by many similar projects:
+ TensorFlow RiemOpt was inspired by many similar projects:
 
  - [Manopt](https://www.manopt.org/), a matlab toolbox for optimization on manifolds
  - [Pymanopt](https://www.pymanopt.org/), a Python toolbox for optimization on manifolds

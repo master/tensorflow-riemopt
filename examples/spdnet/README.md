@@ -2,7 +2,7 @@
 
 Implementation of SPDNet [1], a Riemannian network for SPD matrix learning.
 
-<img align="center" width="800" src="https://github.com/master/tensorflow-manopt/blob/master/examples/spdnet/spdnet.png?raw=true">
+<img align="center" width="800" src="https://github.com/master/tensorflow-riemopt/blob/master/examples/spdnet/spdnet.png?raw=true">
 
 ## Requirements
 
