@@ -10,7 +10,7 @@ Implementation of GrNet [1], a deep network on Grassmann manifolds.
  * SciPy
  * NumPy
  * TensorFlow 2.0+
- * TensorFlow ManOpt
+ * TensorFlow RiemOpt
 
 ## Training
 

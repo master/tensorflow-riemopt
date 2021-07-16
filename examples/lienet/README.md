@@ -11,7 +11,7 @@ skeleton-based action recognition.
  * SciPy
  * NumPy
  * TensorFlow 2.0+
- * TensorFlow ManOpt
+ * TensorFlow RiemOpt
 
 ## Training
 
