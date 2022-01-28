@@ -46,7 +46,8 @@ class Cholesky(Manifold):
     def proju(self, x, u):
         u_sym = (utils.transposem(u) + u) / 2.0
         u_diag, u_lower = self._diag_and_strictly_lower(u_sym)
-        return u_lower + tf.linalg.diag(u_diag)
+        x_diag = tf.linalg.diag_part(x)
+        return u_lower + tf.linalg.diag(u_diag * x_diag ** 2)
 
     def inner(self, x, u, v, keepdims=False):
         u_diag, u_lower = self._diag_and_strictly_lower(u)
