@@ -1,4 +1,6 @@
 """Manifolds of symmetric positive definite matrices."""
+import warnings
+
 import tensorflow as tf
 
 from tensorflow_riemopt.manifolds.manifold import Manifold
@@ -35,6 +37,12 @@ class _SymmetricPositiveDefinite(Manifold):
         return utils.allclose(u, u_t, atol, rtol)
 
     def projx(self, x):
+        warnings.warn(
+            (
+                "{}.projx performs a projection onto the open set of"
+                + " PSD matrices"
+            ).format(self.__class__.__name__)
+        )
         x_sym = (utils.transposem(x) + x) / 2.0
         s, u, v = tf.linalg.svd(x_sym)
         sigma = tf.linalg.diag(tf.maximum(s, 0.0))
