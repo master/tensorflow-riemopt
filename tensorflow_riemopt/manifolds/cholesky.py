@@ -47,7 +47,7 @@ class Cholesky(Manifold):
         u_sym = (utils.transposem(u) + u) / 2.0
         u_diag, u_lower = self._diag_and_strictly_lower(u_sym)
         x_diag = tf.linalg.diag_part(x)
-        return u_lower + tf.linalg.diag(u_diag * x_diag ** 2)
+        return u_lower + tf.linalg.diag(u_diag * x_diag**2)
 
     def inner(self, x, u, v, keepdims=False):
         u_diag, u_lower = self._diag_and_strictly_lower(u)
@@ -92,7 +92,7 @@ class Cholesky(Manifold):
             axis=-1,
             keepdims=keepdims,
         )
-        return tf.math.sqrt(lower ** 2 + tf.reshape(diag, lower.shape) ** 2)
+        return tf.math.sqrt(lower**2 + tf.reshape(diag, lower.shape) ** 2)
 
     def ptransp(self, x, y, v):
         x_diag, _ = self._diag_and_strictly_lower(x)

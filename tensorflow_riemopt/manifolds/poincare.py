@@ -55,7 +55,7 @@ class Poincare(Manifold):
         x_y = tf.reduce_sum(x * y, axis=-1, keepdims=True)
         k = tf.cast(self.k, x.dtype)
         return ((1 + 2 * k * x_y + k * y_2) * x + (1 - k * x_2) * y) / (
-            1 + 2 * k * x_y + k ** 2 * x_2 * y_2
+            1 + 2 * k * x_y + k**2 * x_2 * y_2
         )
 
     def _mobius_scal_mul(self, x, r):
@@ -91,7 +91,7 @@ class Poincare(Manifold):
 
     def inner(self, x, u, v, keepdims=False):
         lambda_x = self._lambda(x, keepdims=keepdims)
-        return tf.reduce_sum(u * v, axis=-1, keepdims=keepdims) * lambda_x ** 2
+        return tf.reduce_sum(u * v, axis=-1, keepdims=keepdims) * lambda_x**2
 
     def norm(self, x, u, keepdims=False):
         lambda_x = self._lambda(x, keepdims=keepdims)
@@ -99,7 +99,7 @@ class Poincare(Manifold):
 
     def proju(self, x, u):
         lambda_x = self._lambda(x, keepdims=True)
-        return u / lambda_x ** 2
+        return u / lambda_x**2
 
     def projx(self, x):
         sqrt_k = tf.math.sqrt(tf.cast(self.k, x.dtype))
