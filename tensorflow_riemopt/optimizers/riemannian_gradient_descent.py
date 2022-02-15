@@ -6,19 +6,19 @@ IEEE Transactions on Automatic Control 58.9 (2013): 2217-2229.
 from tensorflow.python.eager import def_function
 from tensorflow.python.framework import ops
 from tensorflow.python.keras import backend_config
-from tensorflow.python.keras.optimizer_v2 import optimizer_v2
 from tensorflow.python.keras.utils import generic_utils
 from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import control_flow_ops
 from tensorflow.python.ops import math_ops
 from tensorflow.python.ops import state_ops
 from tensorflow.python.training import gen_training_ops
+from keras.optimizer_v2.optimizer_v2 import OptimizerV2
 
 from tensorflow_riemopt.variable import get_manifold
 
 
 @generic_utils.register_keras_serializable(name="RiemannianSGD")
-class RiemannianSGD(optimizer_v2.OptimizerV2):
+class RiemannianSGD(OptimizerV2):
     """Optimizer that implements the Riemannian SGD algorithm."""
 
     _HAS_AGGREGATE_GRAD = True
