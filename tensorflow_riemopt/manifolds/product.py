@@ -82,7 +82,7 @@ class Product(Manifold):
 
     def _product_fn(self, fn, *args, **kwargs):
         results = []
-        for (i, m) in enumerate(self._manifolds):
+        for i, m in enumerate(self._manifolds):
             arg_slices = [self._get_slice(arg, i) for arg in args]
             result = getattr(m, fn)(*arg_slices, **kwargs)
             shape = tf.concat([tf.shape(result)[:-1], [-1]], axis=-1)
@@ -94,7 +94,7 @@ class Product(Manifold):
             raise ValueError("Invalid shape {}".format(shape))
         shape = list(shape)
         results = []
-        for (i, m) in enumerate(self._manifolds):
+        for i, m in enumerate(self._manifolds):
             result = m.random(shape[:-1] + self._shapes[i], dtype=dtype)
             results.append(tf.reshape(result, shape[:-1] + [-1]))
         return tf.concat(results, axis=-1)

@@ -3,14 +3,14 @@ from setuptools import setup, find_packages
 
 setup(
     name="tensorflow-riemopt",
-    version="0.1.0",
+    version="0.1.2",
     description="a library for optimization on Riemannian manifolds",
     long_description=open("README.md", "r").read(),
     long_description_content_type="text/markdown",
     author="Oleg Smirnov",
     author_email="oleg.smirnov@gmail.com",
     packages=find_packages(),
-    install_requires=Path("requirements.txt").read_text().splitlines(),
+    install_requires=["tensorflow==2.6.3", "protobuf==3.19.6"],
     python_requires=">=3.6.0",
     url="https://github.com/master/tensorflow-riemopt",
     zip_safe=True,
