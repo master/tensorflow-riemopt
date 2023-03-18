@@ -80,6 +80,7 @@ optimizers for sparse and dense updates in both Eager and Graph modes.
 
 ## Examples
 
+ - [ANTHEM](https://github.com/amazon-science/hyperbolic-embeddings/tree/main/product_matching) - Choudhary, Nurendra, Nikhil Rao, Sumeet Katariya, Karthik Subbian, and Chandan K. Reddy. "ANTHEM: Attentive Hyperbolic Entity Model for Product Search." In Proceedings of the Fifteenth ACM International Conference on Web Search and Data Mining, 2022.
  - [SPDNet](examples/spdnet/) - Huang, Zhiwu, and Luc Van Gool. "A Riemannian network for SPD matrix learning." Proceedings of the Thirty-First AAAI Conference on Artificial Intelligence. AAAI Press, 2017.
  - [LieNet](examples/lienet/) - Huang, Zhiwu, et al. "Deep learning on Lie groups for skeleton-based action recognition." Proceedings of the IEEE conference on computer vision and pattern recognition. 2017.
  - [GrNet](examples/grnet/) - Huang, Zhiwu, Jiqing Wu, and Luc Van Gool. "Building Deep Networks on Grassmann Manifolds." AAAI. AAAI Press, 2018.
