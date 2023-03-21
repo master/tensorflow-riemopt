@@ -10,7 +10,7 @@ setup(
     author="Oleg Smirnov",
     author_email="oleg.smirnov@gmail.com",
     packages=find_packages(),
-    install_requires=["tensorflow", "keras"],
+    install_requires=["tensorflow<2.12.0", "keras<2.12.0", "protobuf<3.20,>=3.9.2"],
     python_requires=">=3.6.0",
     url="https://github.com/master/tensorflow-riemopt",
     zip_safe=True,
