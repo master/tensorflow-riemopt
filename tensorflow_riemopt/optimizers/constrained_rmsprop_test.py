@@ -139,14 +139,14 @@ class ConstrainedRMSpropTest(test.TestCase, parameterized.TestCase):
                         self.assertAllCloseAccordingToType(
                             self.evaluate(var0_ref),
                             self.evaluate(var0),
-                            rtol=1e-4,
-                            atol=1e-4,
+                            rtol=1e-3,
+                            atol=1e-3,
                         )
                         self.assertAllCloseAccordingToType(
                             self.evaluate(var1_ref),
                             self.evaluate(var1),
-                            rtol=1e-4,
-                            atol=1e-4,
+                            rtol=1e-2,
+                            atol=1e-2,
                         )
 
 

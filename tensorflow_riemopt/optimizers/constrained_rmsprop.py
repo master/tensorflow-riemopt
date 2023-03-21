@@ -15,7 +15,11 @@ from tensorflow.python.ops import control_flow_ops
 from tensorflow.python.ops import math_ops
 from tensorflow.python.ops import state_ops
 from tensorflow.python.training import gen_training_ops
-from keras.optimizer_v2.optimizer_v2 import OptimizerV2
+
+try:
+    from keras.optimizer_v2.optimizer_v2 import OptimizerV2
+except ImportError:
+    from tensorflow.keras.optimizers.legacy import Optimizer as OptimizerV2
 
 from tensorflow_riemopt.variable import get_manifold
 
