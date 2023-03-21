@@ -12,7 +12,11 @@ from tensorflow.python.ops import control_flow_ops
 from tensorflow.python.ops import math_ops
 from tensorflow.python.ops import state_ops
 from tensorflow.python.training import gen_training_ops
-from keras.optimizer_v2.optimizer_v2 import OptimizerV2
+
+try:
+    from keras.optimizer_v2.optimizer_v2 import OptimizerV2
+except ImportError:
+    from tensorflow.keras.optimizers.legacy import Optimizer as OptimizerV2
 
 from tensorflow_riemopt.variable import get_manifold
 
@@ -69,7 +73,7 @@ class RiemannianAdam(OptimizerV2):
 
         """
 
-        super(RiemannianAdam, self).__init__(name, **kwargs)
+        super().__init__(name, **kwargs)
         self._set_hyper("learning_rate", kwargs.get("lr", learning_rate))
         self._set_hyper("decay", self._initial_decay)
         self._set_hyper("beta_1", beta_1)
@@ -88,9 +92,7 @@ class RiemannianAdam(OptimizerV2):
                 self.add_slot(var, "vhat")
 
     def _prepare_local(self, var_device, var_dtype, apply_state):
-        super(RiemannianAdam, self)._prepare_local(
-            var_device, var_dtype, apply_state
-        )
+        super()._prepare_local(var_device, var_dtype, apply_state)
 
         local_step = math_ops.cast(self.iterations + 1, var_dtype)
         beta_1_t = array_ops.identity(self._get_hyper("beta_1", var_dtype))
@@ -118,7 +120,7 @@ class RiemannianAdam(OptimizerV2):
         num_vars = int((len(params) - 1) / 2)
         if len(weights) == 3 * num_vars + 1:
             weights = weights[: len(params)]
-        super(RiemannianAdam, self).set_weights(weights)
+        super().set_weights(weights)
 
     @def_function.function(experimental_compile=True)
     def _resource_apply_dense(self, grad, var, apply_state=None):
@@ -215,7 +217,7 @@ class RiemannianAdam(OptimizerV2):
             m.assign(manifold.proju(var, m))
 
     def get_config(self):
-        config = super(RiemannianAdam, self).get_config()
+        config = super().get_config()
         config.update(
             {
                 "learning_rate": self._serialize_hyperparameter(

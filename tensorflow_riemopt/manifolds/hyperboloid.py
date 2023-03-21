@@ -24,7 +24,7 @@ class Hyperboloid(Manifold):
         super().__init__()
 
     def __repr__(self):
-        return "{0} (k={1}, ndims={2}) manifold".format(
+        return "{} (k={}, ndims={}) manifold".format(
             self.name, self.k, self.ndims
         )
 

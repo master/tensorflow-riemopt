@@ -31,7 +31,7 @@ class Poincare(Manifold):
         super().__init__()
 
     def __repr__(self):
-        return "{0} (k={1}, ndims={2}) manifold".format(
+        return "{} (k={}, ndims={}) manifold".format(
             self.name, self.k, self.ndims
         )
 
@@ -45,10 +45,10 @@ class Poincare(Manifold):
 
     def _mobius_add(self, x, y):
         """Compute the Möbius addition of :math:`x` and :math:`y` in
-        :math:`\mathcal{D}^{n}_{k}`
+        :math:`\\mathcal{D}^{n}_{k}`
 
-        :math:`x \oplus y = \frac{(1 + 2k\langle x, y\rangle + k||y||^2)x + (1
-            - k||x||^2)y}{1 + 2k\langle x,y\rangle + k^2||x||^2||y||^2}`
+        :math:`x \\oplus y = \frac{(1 + 2k\\langle x, y\rangle + k||y||^2)x + (1
+            - k||x||^2)y}{1 + 2k\\langle x,y\rangle + k^2||x||^2||y||^2}`
         """
         x_2 = tf.reduce_sum(tf.math.square(x), axis=-1, keepdims=True)
         y_2 = tf.reduce_sum(tf.math.square(y), axis=-1, keepdims=True)
@@ -59,11 +59,11 @@ class Poincare(Manifold):
         )
 
     def _mobius_scal_mul(self, x, r):
-        """Compute the Möbius scalar multiplication of :math:`x \in
-        \mathcal{D}^{n}_{k} \ {0}` by :math:`r`
+        """Compute the Möbius scalar multiplication of :math:`x \\in
+        \\mathcal{D}^{n}_{k} \\ {0}` by :math:`r`
 
-        :math:`x \otimes r = (1/\sqrt{k})\tanh(r
-        \atanh(\sqrt{k}||x||))\frac{x}{||x||}`
+        :math:`x \\otimes r = (1/\\sqrt{k})\tanh(r
+        \atanh(\\sqrt{k}||x||))\frac{x}{||x||}`
 
         """
         sqrt_k = tf.math.sqrt(tf.cast(self.k, x.dtype))
@@ -73,7 +73,7 @@ class Poincare(Manifold):
         return (1 / sqrt_k) * tf.math.tanh(r * tf.math.atanh(tan)) * x / norm_x
 
     def _gyration(self, u, v, w):
-        """Compute the gyration of :math:`u`, :math:`v`, :math:`w`:
+        r"""Compute the gyration of :math:`u`, :math:`v`, :math:`w`:
 
         :math:`\operatorname{gyr}[u, v]w =
         \ominus (u \oplus_\kappa v) \oplus (u \oplus_\kappa (v \oplus_\kappa w))`
