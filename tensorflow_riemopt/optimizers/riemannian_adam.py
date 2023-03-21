@@ -92,9 +92,7 @@ class RiemannianAdam(OptimizerV2):
                 self.add_slot(var, "vhat")
 
     def _prepare_local(self, var_device, var_dtype, apply_state):
-        super()._prepare_local(
-            var_device, var_dtype, apply_state
-        )
+        super()._prepare_local(var_device, var_dtype, apply_state)
 
         local_step = math_ops.cast(self.iterations + 1, var_dtype)
         beta_1_t = array_ops.identity(self._get_hyper("beta_1", var_dtype))

@@ -87,9 +87,7 @@ class ConstrainedRMSprop(OptimizerV2):
                 self.add_slot(var, "mg")
 
     def _prepare_local(self, var_device, var_dtype, apply_state):
-        super()._prepare_local(
-            var_device, var_dtype, apply_state
-        )
+        super()._prepare_local(var_device, var_dtype, apply_state)
 
         rho = array_ops.identity(self._get_hyper("rho", var_dtype))
         apply_state[(var_device, var_dtype)].update(
