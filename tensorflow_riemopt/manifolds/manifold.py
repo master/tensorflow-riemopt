@@ -8,7 +8,7 @@ class Manifold(metaclass=abc.ABCMeta):
 
     def __repr__(self):
         """Returns a string representation of the particular manifold."""
-        return "{0} (ndims={1}) manifold".format(self.name, self.ndims)
+        return "{} (ndims={}) manifold".format(self.name, self.ndims)
 
     def check_shape(self, shape_or_tensor):
         """Check if given shape is compatible with the manifold."""

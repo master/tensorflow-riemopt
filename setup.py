@@ -5,7 +5,7 @@ setup(
     name="tensorflow-riemopt",
     version="0.1.2",
     description="a library for optimization on Riemannian manifolds",
-    long_description=open("README.md", "r").read(),
+    long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="Oleg Smirnov",
     author_email="oleg.smirnov@gmail.com",

@@ -57,7 +57,7 @@ class RiemannianSGD(OptimizerV2):
 
         """
 
-        super(RiemannianSGD, self).__init__(name, **kwargs)
+        super().__init__(name, **kwargs)
         self._set_hyper("learning_rate", kwargs.get("lr", learning_rate))
         self._set_hyper("decay", self._initial_decay)
         self._momentum = False
@@ -81,7 +81,7 @@ class RiemannianSGD(OptimizerV2):
                 self.add_slot(var, "momentum")
 
     def _prepare_local(self, var_device, var_dtype, apply_state):
-        super(RiemannianSGD, self)._prepare_local(
+        super()._prepare_local(
             var_device, var_dtype, apply_state
         )
         apply_state[(var_device, var_dtype)]["momentum"] = array_ops.identity(
@@ -168,7 +168,7 @@ class RiemannianSGD(OptimizerV2):
                 momentum.assign(manifold.proju(var, momentum))
 
     def get_config(self):
-        config = super(RiemannianSGD, self).get_config()
+        config = super().get_config()
         config.update(
             {
                 "learning_rate": self._serialize_hyperparameter(

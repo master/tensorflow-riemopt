@@ -66,7 +66,7 @@ class ConstrainedRMSprop(OptimizerV2):
             allow time inverse decay of learning rate. `lr` is included for backward
             compatibility, recommended to use `learning_rate` instead.
         """
-        super(ConstrainedRMSprop, self).__init__(name, **kwargs)
+        super().__init__(name, **kwargs)
         self._set_hyper("learning_rate", kwargs.get("lr", learning_rate))
         self._set_hyper("decay", self._initial_decay)
         self._set_hyper("rho", rho)
@@ -83,7 +83,7 @@ class ConstrainedRMSprop(OptimizerV2):
                 self.add_slot(var, "mg")
 
     def _prepare_local(self, var_device, var_dtype, apply_state):
-        super(ConstrainedRMSprop, self)._prepare_local(
+        super()._prepare_local(
             var_device, var_dtype, apply_state
         )
 
@@ -197,10 +197,10 @@ class ConstrainedRMSprop(OptimizerV2):
         params = self.weights
         if len(params) == len(weights) + 1:
             weights = [np.array(0)] + weights
-        super(ConstrainedRMSprop, self).set_weights(weights)
+        super().set_weights(weights)
 
     def get_config(self):
-        config = super(ConstrainedRMSprop, self).get_config()
+        config = super().get_config()
         config.update(
             {
                 "learning_rate": self._serialize_hyperparameter(
