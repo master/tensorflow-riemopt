@@ -2,6 +2,7 @@ import requests
 import zipfile
 import os
 import glob
+from pathlib import Path
 
 import tqdm
 import scipy.io
@@ -41,5 +42,5 @@ def load_matlab_data(key, data_dir, *folders):
     examples, labels = [], []
     for filename in glob.glob(os.path.join(*folders)):
         examples.append(scipy.io.loadmat(filename)[key])
-        labels.append(int(filename.split("/")[-2]))
+        labels.append(int(Path(filename).parts[-2]))
     return np.stack(examples), np.array(labels) - 1
