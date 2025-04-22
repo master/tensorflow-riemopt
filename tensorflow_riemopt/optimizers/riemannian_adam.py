@@ -11,12 +11,9 @@ from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import control_flow_ops
 from tensorflow.python.ops import math_ops
 from tensorflow.python.ops import state_ops
-from tensorflow.python.training import gen_training_ops
-
-try:
-    from keras.optimizer_v2.optimizer_v2 import OptimizerV2
-except ImportError:
-    from tensorflow.keras.optimizers.legacy import Optimizer as OptimizerV2
+from tensorflow.python.ops import gen_training_ops
+from tensorflow.python.framework.indexed_slices import IndexedSlices
+from tensorflow.python.keras.optimizer_v2.optimizer_v2 import OptimizerV2
 
 from tensorflow_riemopt.variable import get_manifold
 
@@ -105,7 +102,7 @@ class RiemannianAdam(OptimizerV2):
         apply_state[(var_device, var_dtype)].update(
             dict(
                 lr=lr,
-                epsilon=ops.convert_to_tensor_v2(self.epsilon, var_dtype),
+                epsilon=ops.convert_to_tensor(self.epsilon, var_dtype),
                 beta_1_t=beta_1_t,
                 beta_1_power=beta_1_power,
                 one_minus_beta_1_t=1 - beta_1_t,
@@ -154,10 +151,10 @@ class RiemannianAdam(OptimizerV2):
             var, -(m * alpha) / (math_ops.sqrt(v) + coefficients["epsilon"])
         )
         m.assign(manifold.transp(var, var_t, m))
-        var.assign(var_t)
-
+        var_update = var.assign(var_t)
         if self.stabilize is not None:
             self._stabilize(var)
+        return var_update
 
     @def_function.function(experimental_compile=True)
     def _resource_apply_sparse(self, grad, var, indices, apply_state=None):
@@ -190,7 +187,7 @@ class RiemannianAdam(OptimizerV2):
 
         if self.amsgrad:
             vhat = self.get_slot(var, "vhat")
-            vhat.scatter_max(ops.IndexedSlices(v_t_values, indices))
+            vhat.scatter_max(IndexedSlices(v_t_values, indices))
             v_t_values = array_ops.gather(vhat, indices)
 
         var_values = array_ops.gather(var, indices)
@@ -201,12 +198,12 @@ class RiemannianAdam(OptimizerV2):
         )
         m_t_transp = manifold.transp(var_values, var_t_values, m_t_values)
 
-        m.scatter_update(ops.IndexedSlices(m_t_transp, indices))
-        v.scatter_update(ops.IndexedSlices(v_t_values, indices))
-        var.scatter_update(ops.IndexedSlices(var_t_values, indices))
-
+        m.scatter_update(IndexedSlices(m_t_transp, indices))
+        v.scatter_update(IndexedSlices(v_t_values, indices))
+        var_update = var.scatter_update(IndexedSlices(var_t_values, indices))
         if self.stabilize is not None:
             self._stabilize(var)
+        return var_update
 
     @def_function.function(experimental_compile=True)
     def _stabilize(self, var):

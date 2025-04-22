@@ -11,12 +11,10 @@ from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import control_flow_ops
 from tensorflow.python.ops import math_ops
 from tensorflow.python.ops import state_ops
-from tensorflow.python.training import gen_training_ops
-
-try:
-    from keras.optimizer_v2.optimizer_v2 import OptimizerV2
-except ImportError:
-    from tensorflow.keras.optimizers.legacy import Optimizer as OptimizerV2
+from tensorflow.python.ops import gen_training_ops
+from tensorflow.python.framework.tensor import Tensor
+from tensorflow.python.framework.indexed_slices import IndexedSlices
+from tensorflow.python.keras.optimizer_v2.optimizer_v2 import OptimizerV2
 
 from tensorflow_riemopt.variable import get_manifold
 
@@ -66,7 +64,7 @@ class RiemannianSGD(OptimizerV2):
         self._set_hyper("decay", self._initial_decay)
         self._momentum = False
         if (
-            isinstance(momentum, ops.Tensor)
+            isinstance(momentum, Tensor)
             or callable(momentum)
             or momentum > 0
         ):
@@ -111,12 +109,13 @@ class RiemannianSGD(OptimizerV2):
             else:
                 var_t = manifold.retr(var, momentum_t)
             momentum.assign(manifold.transp(var, var_t, momentum_t))
-            var.assign(var_t)
+            var_update = var.assign(var_t)
         else:
-            var.assign(manifold.retr(var, -grad * coefficients["lr_t"]))
+            var_update = var.assign(manifold.retr(var, -grad * coefficients["lr_t"]))
 
         if self.stabilize is not None:
             self._stabilize(var)
+        return var_update
 
     @def_function.function(experimental_compile=True)
     def _resource_apply_sparse(self, grad, var, indices, apply_state=None):
@@ -147,18 +146,15 @@ class RiemannianSGD(OptimizerV2):
             momentum_transp_values = manifold.transp(
                 var_values, var_t_values, momentum_t_values
             )
-            momentum.scatter_update(
-                ops.IndexedSlices(momentum_transp_values, indices)
-            )
+            momentum.scatter_update(IndexedSlices(momentum_transp_values, indices))
+            var_update = var.scatter_update(IndexedSlices(var_t_values, indices))
         else:
-            var_t_values = manifold.retr(
-                var_values, -grad * coefficients["lr_t"]
-            )
-
-        var.scatter_update(ops.IndexedSlices(var_t_values, indices))
+            var_t_values = manifold.retr(var_values, -grad * coefficients["lr_t"])
+            var_update = var.scatter_update(IndexedSlices(var_t_values, indices))
 
         if self.stabilize is not None:
             self._stabilize(var)
+        return var_update
 
     @def_function.function(experimental_compile=True)
     def _stabilize(self, var):

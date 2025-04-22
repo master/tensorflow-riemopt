@@ -14,12 +14,9 @@ from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import control_flow_ops
 from tensorflow.python.ops import math_ops
 from tensorflow.python.ops import state_ops
-from tensorflow.python.training import gen_training_ops
-
-try:
-    from keras.optimizer_v2.optimizer_v2 import OptimizerV2
-except ImportError:
-    from tensorflow.keras.optimizers.legacy import Optimizer as OptimizerV2
+from tensorflow.python.ops import gen_training_ops
+from tensorflow.python.framework.indexed_slices import IndexedSlices
+from tensorflow.python.keras.optimizer_v2.optimizer_v2 import OptimizerV2
 
 from tensorflow_riemopt.variable import get_manifold
 
@@ -93,7 +90,7 @@ class ConstrainedRMSprop(OptimizerV2):
         apply_state[(var_device, var_dtype)].update(
             dict(
                 neg_lr_t=-apply_state[(var_device, var_dtype)]["lr_t"],
-                epsilon=ops.convert_to_tensor_v2(self.epsilon, var_dtype),
+                epsilon=ops.convert_to_tensor(self.epsilon, var_dtype),
                 rho=rho,
                 one_minus_rho=1.0 - rho,
             )
@@ -131,10 +128,10 @@ class ConstrainedRMSprop(OptimizerV2):
         rms.assign(manifold.transp(var, var_t, rms_t))
         if self.centered:
             mg.assign(manifold.transp(var, var_t, mg_t))
-        var.assign(var_t)
-
+        var_update = var.assign(var_t)
         if self.stabilize is not None:
             self._stabilize(var)
+        return var_update
 
     @def_function.function(experimental_compile=True)
     def _resource_apply_sparse(self, grad, var, indices, apply_state=None):
@@ -173,16 +170,16 @@ class ConstrainedRMSprop(OptimizerV2):
         )
 
         rms_t_transp = manifold.transp(var_values, var_t_values, rms_t_values)
-        rms.scatter_update(ops.IndexedSlices(rms_t_transp, indices))
+        rms.scatter_update(IndexedSlices(rms_t_transp, indices))
 
         if self.centered:
             mg_t_transp = manifold.transp(var_values, var_t_values, mg_t_values)
-            mg.scatter_update(ops.IndexedSlices(mg_t_transp, indices))
+            mg.scatter_update(IndexedSlices(mg_t_transp, indices))
 
-        var.scatter_update(ops.IndexedSlices(var_t_values, indices))
-
+        var_update = var.scatter_update(IndexedSlices(var_t_values, indices))
         if self.stabilize is not None:
             self._stabilize(var)
+        return var_update
 
     @def_function.function(experimental_compile=True)
     def _stabilize(self, var):

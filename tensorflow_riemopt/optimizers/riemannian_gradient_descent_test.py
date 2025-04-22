@@ -13,6 +13,7 @@ from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import math_ops
 from tensorflow.python.ops import variables
 from tensorflow.python.platform import test
+from tensorflow.python.framework.indexed_slices import IndexedSlices
 
 from tensorflow_riemopt.optimizers.riemannian_gradient_descent import (
     RiemannianSGD,
@@ -45,13 +46,13 @@ class RiemannianSGDOptimizerTest(test.TestCase, parameterized.TestCase):
                         var0_ref = variables.Variable(var0_np)
                         var1_ref = variables.Variable(var1_np)
                         grads0_np_indices = np.array([0, 2], dtype=np.int32)
-                        grads0 = ops.IndexedSlices(
+                        grads0 = IndexedSlices(
                             constant_op.constant(grads0_np[grads0_np_indices]),
                             constant_op.constant(grads0_np_indices),
                             constant_op.constant([3]),
                         )
                         grads1_np_indices = np.array([0, 2], dtype=np.int32)
-                        grads1 = ops.IndexedSlices(
+                        grads1 = IndexedSlices(
                             constant_op.constant(grads1_np[grads1_np_indices]),
                             constant_op.constant(grads1_np_indices),
                             constant_op.constant([3]),
