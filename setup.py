@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="tensorflow-riemopt",
-    version="0.2.0",
+    version="0.3.0",
     description="a library for optimization on Riemannian manifolds",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",

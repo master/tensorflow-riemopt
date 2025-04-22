@@ -2,3 +2,7 @@ pip>=20.0.0
 black
 coveralls
 pytest-cov
+sphinx
+myst-parser
+sphinx-autodoc-typehints
+pydata-sphinx-theme
