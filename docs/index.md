@@ -15,13 +15,6 @@ pip install tensorflow-riemopt
 
 ## Quickstart
 
-```{figure} _static/usage.png
-:align: right
-:width: 300px
-
-Example: SPDNet classification on SPD manifold
-```
-
 ```python
 import tensorflow as tf
 from tensorflow_riemopt.optimizers import ConstrainedRMSprop
