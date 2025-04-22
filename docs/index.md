@@ -1,5 +1,10 @@
 # TensorFlow RiemOpt
 
+```{figure} _static/usage.png
+:align: right
+:width: 300px
+```
+
 **TensorFlow RiemOpt** is a flexible, extensible library for Riemannian optimization and geometric deep learning in TensorFlow. It provides:
 - Riemannian manifold classes with associated exponential and logarithmic maps, geodesics, and transports
 - Riemannian optimizers (SGD, RMSProp, and adaptive methods such as Adam)
