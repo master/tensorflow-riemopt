@@ -1,4 +1,5 @@
 """Manifold of the Cholesky space."""
+
 import tensorflow as tf
 
 from tensorflow_riemopt.manifolds.manifold import Manifold

@@ -1,4 +1,5 @@
 """Cartesian product of manifolds."""
+
 import tensorflow as tf
 from functools import reduce
 from operator import mul

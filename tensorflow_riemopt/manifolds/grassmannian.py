@@ -1,4 +1,5 @@
 """Manifold of linear subspaces of a vector space."""
+
 import tensorflow as tf
 
 from tensorflow_riemopt.manifolds.manifold import Manifold

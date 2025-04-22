@@ -3,6 +3,7 @@
 Bonnabel, Silvere. "Stochastic gradient descent on Riemannian manifolds."
 IEEE Transactions on Automatic Control 58.9 (2013): 2217-2229.
 """
+
 from tensorflow.python.eager import def_function
 from tensorflow.python.framework import ops
 from tensorflow.python.keras import backend_config
@@ -63,11 +64,7 @@ class RiemannianSGD(OptimizerV2):
         self._set_hyper("learning_rate", kwargs.get("lr", learning_rate))
         self._set_hyper("decay", self._initial_decay)
         self._momentum = False
-        if (
-            isinstance(momentum, Tensor)
-            or callable(momentum)
-            or momentum > 0
-        ):
+        if isinstance(momentum, Tensor) or callable(momentum) or momentum > 0:
             self._momentum = True
         if isinstance(momentum, (int, float)) and (
             momentum < 0 or momentum > 1
@@ -111,7 +108,9 @@ class RiemannianSGD(OptimizerV2):
             momentum.assign(manifold.transp(var, var_t, momentum_t))
             var_update = var.assign(var_t)
         else:
-            var_update = var.assign(manifold.retr(var, -grad * coefficients["lr_t"]))
+            var_update = var.assign(
+                manifold.retr(var, -grad * coefficients["lr_t"])
+            )
 
         if self.stabilize is not None:
             self._stabilize(var)
@@ -146,11 +145,19 @@ class RiemannianSGD(OptimizerV2):
             momentum_transp_values = manifold.transp(
                 var_values, var_t_values, momentum_t_values
             )
-            momentum.scatter_update(IndexedSlices(momentum_transp_values, indices))
-            var_update = var.scatter_update(IndexedSlices(var_t_values, indices))
+            momentum.scatter_update(
+                IndexedSlices(momentum_transp_values, indices)
+            )
+            var_update = var.scatter_update(
+                IndexedSlices(var_t_values, indices)
+            )
         else:
-            var_t_values = manifold.retr(var_values, -grad * coefficients["lr_t"])
-            var_update = var.scatter_update(IndexedSlices(var_t_values, indices))
+            var_t_values = manifold.retr(
+                var_values, -grad * coefficients["lr_t"]
+            )
+            var_update = var.scatter_update(
+                IndexedSlices(var_t_values, indices)
+            )
 
         if self.stabilize is not None:
             self._stabilize(var)

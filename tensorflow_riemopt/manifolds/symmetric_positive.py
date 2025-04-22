@@ -1,4 +1,5 @@
 """Manifolds of symmetric positive definite matrices."""
+
 import warnings
 
 import tensorflow as tf

@@ -1,4 +1,5 @@
 """Manifold of rotation matrices."""
+
 import tensorflow as tf
 
 from tensorflow_riemopt.manifolds.manifold import Manifold

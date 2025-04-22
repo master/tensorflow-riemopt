@@ -3,6 +3,7 @@
 Becigneul, Gary, and Octavian-Eugen Ganea. "Riemannian Adaptive Optimization
 Methods." International Conference on Learning Representations. 2018.
 """
+
 from tensorflow.python.eager import def_function
 from tensorflow.python.framework import ops
 from tensorflow.python.keras import backend_config

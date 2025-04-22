@@ -4,6 +4,7 @@ Kumar Roy, Soumava, Zakaria Mhammedi, and Mehrtash Harandi. "Geometry aware
 constrained optimization techniques for deep learning." Proceedings of the
 IEEE Conference on Computer Vision and Pattern Recognition. 2018.
 """
+
 import numpy as np
 
 from tensorflow.python.eager import def_function
