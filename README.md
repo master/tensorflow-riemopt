@@ -103,6 +103,10 @@ optimizers for sparse and dense updates in both Eager and Graph modes.
 }
 ```
 
+## Contact
+
+For support or development inquiries, contact us at: [tensorflow-riemopt-dev@googlegroups.com](mailto:tensorflow-riemopt-dev@googlegroups.com)
+
 ## Acknowledgment
 
  TensorFlow RiemOpt was inspired by many similar projects:
