@@ -54,6 +54,8 @@ recognition [@hou2018computing; @huang2017deep]. Training of these models
 requires an optimizer whose updates are constrained to the manifold, which is
 not guaranteed by the conventional Euclidean optimizers.
 
+# State of the field
+
 Riemannian stochastic optimization [@bonnabel2013stochastic; @roy2018geometry;
 @becigneul2018riemannian; @kasai2019riemannian] has support in PyTorch through
 Geoopt [@kochurov2020geoopt] and McTorch [@meghwanshi2018mctorch]. TensorFlow,
