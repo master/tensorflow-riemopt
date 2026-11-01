@@ -40,11 +40,13 @@ class SpecialOrthogonal(Manifold):
         return (xtu - utils.transposem(xtu)) / 2.0
 
     def projx(self, x):
-        s, u, vt = tf.linalg.svd(x)
+        s, u, v = tf.linalg.svd(x)
         ones = tf.ones_like(s)[..., :-1]
-        signs = tf.cast(tf.sign(tf.linalg.det(u @ vt)), ones.dtype)
+        signs = tf.cast(
+            tf.sign(tf.linalg.det(u @ utils.transposem(v))), ones.dtype
+        )
         flip = tf.concat([ones, tf.expand_dims(signs, -1)], axis=-1)
-        return u @ tf.linalg.diag(flip) @ vt
+        return u @ tf.linalg.diag(flip) @ utils.transposem(v)
 
     def exp(self, x, u):
         return x @ tf.linalg.expm(u)

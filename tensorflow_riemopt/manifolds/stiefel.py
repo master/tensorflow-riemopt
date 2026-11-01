@@ -46,8 +46,8 @@ class _Stiefel(Manifold):
         return utils.allclose(diff, tf.zeros_like(diff), atol, rtol)
 
     def projx(self, x):
-        _s, u, vt = tf.linalg.svd(x)
-        return u @ vt
+        _s, u, v = tf.linalg.svd(x)
+        return u @ utils.transposem(v)
 
 
 class StiefelEuclidean(_Stiefel):
