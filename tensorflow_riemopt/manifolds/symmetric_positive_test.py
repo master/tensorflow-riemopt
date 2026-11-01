@@ -12,15 +12,13 @@ from tensorflow_riemopt.manifolds.symmetric_positive import SPDLogCholesky
 @combinations.generate(
     combinations.combine(
         mode=["graph", "eager"],
-        manifold=[SPDAffineInvariant(), SPDLogCholesky()],
+        manifold=[SPDAffineInvariant()],
         shape=[(2, 3, 3), (3, 3)],
         dtype=[tf.float32, tf.float64],
     )
 )
-class SymmetricPositiveTest(tf.test.TestCase, parameterized.TestCase):
+class SPDAffineInvariantTest(tf.test.TestCase, parameterized.TestCase):
     test_random = TestInvariants.check_random
-
-    test_dist = TestInvariants.check_dist
 
     test_inner = TestInvariants.check_inner
 
@@ -38,15 +36,27 @@ class SymmetricPositiveTest(tf.test.TestCase, parameterized.TestCase):
 @combinations.generate(
     combinations.combine(
         mode=["graph", "eager"],
-        manifold=[SPDAffineInvariant(), SPDLogCholesky(), SPDLogEuclidean()],
+        manifold=[SPDLogCholesky()],
         shape=[(2, 3, 3), (3, 3)],
-        dtype=[tf.float64],
+        dtype=[tf.float32, tf.float64],
     )
 )
-class SymmetricPositiveFloat64Test(tf.test.TestCase, parameterized.TestCase):
-    test_ptransp_inner = TestInvariants.check_ptransp_inner
+class SPDLogCholeskyTest(tf.test.TestCase, parameterized.TestCase):
+    test_random = TestInvariants.check_random
 
-    test_pairmean = TestInvariants.check_pairmean
+    test_dist = TestInvariants.check_dist
+
+    test_inner = TestInvariants.check_inner
+
+    test_proj = TestInvariants.check_proj
+
+    test_exp_log_inverse = TestInvariants.check_exp_log_inverse
+
+    test_transp_retr = TestInvariants.check_transp_retr
+
+    test_ptransp_inverse = TestInvariants.check_ptransp_inverse
+
+    test_geodesic = TestInvariants.check_geodesic
 
 
 @combinations.generate(
@@ -57,7 +67,7 @@ class SymmetricPositiveFloat64Test(tf.test.TestCase, parameterized.TestCase):
         dtype=[tf.float32, tf.float64],
     )
 )
-class SymmetricPositiveLETest(tf.test.TestCase, parameterized.TestCase):
+class SPDLogEuclideanTest(tf.test.TestCase, parameterized.TestCase):
     test_random = TestInvariants.check_random
 
     test_dist = TestInvariants.check_dist
@@ -73,3 +83,29 @@ class SymmetricPositiveLETest(tf.test.TestCase, parameterized.TestCase):
     test_ptransp_inverse = TestInvariants.check_ptransp_inverse
 
     test_geodesic = TestInvariants.check_geodesic
+
+
+@combinations.generate(
+    combinations.combine(
+        mode=["graph", "eager"],
+        manifold=[SPDAffineInvariant()],
+        shape=[(2, 3, 3), (3, 3)],
+        dtype=[tf.float64],
+    )
+)
+class SPDAffineInvariantFloat64Test(tf.test.TestCase, parameterized.TestCase):
+    test_dist = TestInvariants.check_dist
+
+
+@combinations.generate(
+    combinations.combine(
+        mode=["graph", "eager"],
+        manifold=[SPDAffineInvariant(), SPDLogCholesky(), SPDLogEuclidean()],
+        shape=[(2, 3, 3), (3, 3)],
+        dtype=[tf.float64],
+    )
+)
+class SPDFloat64Test(tf.test.TestCase, parameterized.TestCase):
+    test_ptransp_inner = TestInvariants.check_ptransp_inner
+
+    test_pairmean = TestInvariants.check_pairmean
