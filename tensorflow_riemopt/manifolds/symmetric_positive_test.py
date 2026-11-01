@@ -14,7 +14,7 @@ from tensorflow_riemopt.manifolds.symmetric_positive import SPDLogCholesky
         mode=["graph", "eager"],
         manifold=[SPDAffineInvariant(), SPDLogCholesky()],
         shape=[(2, 3, 3), (3, 3)],
-        dtype=[tf.float64],
+        dtype=[tf.float32, tf.float64],
     )
 )
 class SymmetricPositiveTest(tf.test.TestCase, parameterized.TestCase):
@@ -34,8 +34,6 @@ class SymmetricPositiveTest(tf.test.TestCase, parameterized.TestCase):
 
     test_geodesic = TestInvariants.check_geodesic
 
-    test_pairmean = TestInvariants.check_pairmean
-
 
 @combinations.generate(
     combinations.combine(
@@ -45,10 +43,10 @@ class SymmetricPositiveTest(tf.test.TestCase, parameterized.TestCase):
         dtype=[tf.float64],
     )
 )
-class SymmetricPositivePtranspInnerTest(
-    tf.test.TestCase, parameterized.TestCase
-):
+class SymmetricPositiveFloat64Test(tf.test.TestCase, parameterized.TestCase):
     test_ptransp_inner = TestInvariants.check_ptransp_inner
+
+    test_pairmean = TestInvariants.check_pairmean
 
 
 @combinations.generate(
@@ -75,5 +73,3 @@ class SymmetricPositiveLETest(tf.test.TestCase, parameterized.TestCase):
     test_ptransp_inverse = TestInvariants.check_ptransp_inverse
 
     test_geodesic = TestInvariants.check_geodesic
-
-    test_pairmean = TestInvariants.check_pairmean

@@ -136,13 +136,14 @@ class SPDLogEuclidean(_SymmetricPositiveDefinite):
         denom = utils.transposem(s) - s
         numer = utils.transposem(pow_s) - pow_s
         abs_denom = tf.math.abs(denom)
-        eps = utils.get_eps(x)
+        scale = tf.reduce_max(tf.abs(e), axis=[-2, -1], keepdims=True)
+        tol = 8 * utils.get_eps(x) * tf.maximum(scale, 1.0)
         if power == "log":
-            numer = tf.where(abs_denom < eps, tf.ones_like(numer), numer)
-            denom = tf.where(abs_denom < eps, utils.transposem(s), denom)
+            numer = tf.where(abs_denom < tol, tf.ones_like(numer), numer)
+            denom = tf.where(abs_denom < tol, utils.transposem(s), denom)
         elif power == "exp":
-            numer = tf.where(abs_denom < eps, utils.transposem(pow_s), numer)
-            denom = tf.where(abs_denom < eps, tf.ones_like(denom), denom)
+            numer = tf.where(abs_denom < tol, utils.transposem(pow_s), numer)
+            denom = tf.where(abs_denom < tol, tf.ones_like(denom), denom)
         t = v_t @ d @ v * numer / denom
         return v @ t @ v_t
 
@@ -174,7 +175,9 @@ class SPDLogEuclidean(_SymmetricPositiveDefinite):
         return tf.linalg.expm((utils.logm(x) + utils.logm(y)) / 2.0)
 
     def ptransp(self, x, y, v):
-        return self._diff_exp(utils.logm(y), self._diff_log(x, v))
+        return self.proju(
+            y, self._diff_exp(utils.logm(y), self._diff_log(x, v))
+        )
 
     transp = ptransp
 
