@@ -54,39 +54,36 @@ class Grassmannian(Manifold):
         return tf.reduce_sum(u * v, axis=[-2, -1], keepdims=keepdims)
 
     def exp(self, x, u):
-        s, u, vt = tf.linalg.svd(u, full_matrices=False)
+        s, u, v = tf.linalg.svd(u, full_matrices=False)
         cos_s = tf.linalg.diag(tf.math.cos(s))
         sin_s = tf.linalg.diag(tf.math.sin(s))
-        return (x @ utils.transposem(vt) @ cos_s + u @ sin_s) @ vt
+        return (x @ v @ cos_s + u @ sin_s) @ utils.transposem(v)
 
     def log(self, x, y):
-        proj_xy = self.proju(x, y)
-        s, u, vt = tf.linalg.svd(proj_xy, full_matrices=False)
-        sigma = tf.linalg.diag(tf.math.asin(tf.clip_by_value(s, -1.0, 1.0)))
-        return u @ sigma @ vt
+        ytx = utils.transposem(y) @ x
+        at = utils.transposem(y) - ytx @ utils.transposem(x)
+        bt = tf.linalg.solve(ytx, at)
+        s, u, v = tf.linalg.svd(utils.transposem(bt), full_matrices=False)
+        return u @ tf.linalg.diag(tf.math.atan(s)) @ utils.transposem(v)
 
     def geodesic(self, x, u, t):
-        s, u, vt = tf.linalg.svd(u, full_matrices=False)
+        s, u, v = tf.linalg.svd(u, full_matrices=False)
         cos_ts = tf.linalg.diag(tf.math.cos(t * s))
         sin_ts = tf.linalg.diag(tf.math.sin(t * s))
-        return (x @ utils.transposem(vt) @ cos_ts + u @ sin_ts) @ vt
+        return (x @ v @ cos_ts + u @ sin_ts) @ utils.transposem(v)
 
     def transp(self, x, y, v):
         return self.proju(y, v)
 
     def retr(self, x, u):
-        _s, u, vt = tf.linalg.svd(x + u, full_matrices=False)
-        return u @ vt
+        _s, u, v = tf.linalg.svd(x + u, full_matrices=False)
+        return u @ utils.transposem(v)
 
     def ptransp(self, x, y, v):
         log_xy = self.log(x, y)
-        s, u, vt = tf.linalg.svd(log_xy, full_matrices=False)
+        s, u, w = tf.linalg.svd(log_xy, full_matrices=False)
         cos_s = tf.linalg.diag(tf.math.cos(s))
         sin_s = tf.linalg.diag(tf.math.sin(s))
-        geod = (
-            (-x @ utils.transposem(vt) @ sin_s + u @ cos_s)
-            @ utils.transposem(u)
-            @ v
-        )
+        geod = (-x @ w @ sin_s + u @ cos_s) @ utils.transposem(u) @ v
         proj = v - u @ utils.transposem(u) @ v
         return geod + proj
