@@ -44,9 +44,12 @@ class Hyperboloid(Manifold):
         return utils.allclose(inner, tf.zeros_like(inner), atol, rtol)
 
     def dist(self, x, y, keepdims=False):
-        d = -self.inner(x, x, y, keepdims=keepdims)
         k = tf.cast(self.k, x.dtype)
-        return tf.math.sqrt(k) * tf.math.acosh(tf.maximum(d / k, 1.0))
+        a = -self.inner(x, x, y, keepdims=keepdims) / k
+        chord = tf.maximum(self.inner(x, x - y, x - y, keepdims=keepdims), 0.0)
+        near = 2.0 * tf.math.asinh(tf.math.sqrt(chord / (4.0 * k)))
+        far = tf.math.acosh(tf.maximum(a, 1.5))
+        return tf.math.sqrt(k) * tf.where(a < 1.5, near, far)
 
     def inner(self, x, u, v, keepdims=False):
         uv = u * v
@@ -55,7 +58,7 @@ class Hyperboloid(Manifold):
 
     def norm(self, x, u, keepdims=False):
         inner = self.inner(x, u, u, keepdims=keepdims)
-        return tf.math.sqrt(tf.maximum(inner, utils.get_eps(x)))
+        return tf.math.sqrt(tf.maximum(inner, utils.get_eps(x) ** 2))
 
     def proju(self, x, u):
         k = tf.cast(self.k, x.dtype)
@@ -73,15 +76,17 @@ class Hyperboloid(Manifold):
         dist = self.dist(x, y, keepdims=True)
         inner = self.inner(x, x, y, keepdims=True)
         p = y + 1.0 / k * inner * x
-        return dist * p / self.norm(x, p, keepdims=True)
+        log = dist * p / self.norm(x, p, keepdims=True)
+        return tf.where(dist > utils.get_eps(x), log, tf.zeros_like(log))
 
     def exp(self, x, u):
         sqrt_k = tf.math.sqrt(tf.cast(self.k, x.dtype))
         norm_u = self.norm(x, u, keepdims=True)
-        return (
+        exp = (
             tf.math.cosh(norm_u / sqrt_k) * x
             + sqrt_k * tf.math.sinh(norm_u / sqrt_k) * u / norm_u
         )
+        return tf.where(norm_u > utils.get_eps(x), exp, x + u)
 
     retr = exp
 

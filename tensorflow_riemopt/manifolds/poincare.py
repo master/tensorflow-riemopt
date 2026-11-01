@@ -68,8 +68,10 @@ class Poincare(Manifold):
 
         """
         sqrt_k = tf.math.sqrt(tf.cast(self.k, x.dtype))
-        norm_x = tf.linalg.norm(x, axis=-1, keepdims=True)
         eps = utils.get_eps(x)
+        norm_x = tf.sqrt(
+            tf.maximum(tf.reduce_sum(x * x, axis=-1, keepdims=True), eps * eps)
+        )
         tan = tf.clip_by_value(sqrt_k * norm_x, -1.0 + eps, 1.0 - eps)
         return (1 / sqrt_k) * tf.math.tanh(r * tf.math.atanh(tan)) * x / norm_x
 
@@ -121,23 +123,31 @@ class Poincare(Manifold):
 
     def exp(self, x, u):
         sqrt_k = tf.math.sqrt(tf.cast(self.k, x.dtype))
-        norm_u = tf.linalg.norm(u, axis=-1, keepdims=True)
+        eps = utils.get_eps(x)
+        norm_u = tf.sqrt(
+            tf.maximum(tf.reduce_sum(u * u, axis=-1, keepdims=True), eps * eps)
+        )
         lambda_x = self._lambda(x, keepdims=True)
         y = (
             tf.math.tanh(sqrt_k * norm_u * lambda_x / 2.0)
             * u
             / (sqrt_k * norm_u)
         )
-        return self._mobius_add(x, y)
+        return tf.where(norm_u > eps, self._mobius_add(x, y), x + u)
 
     def log(self, x, y):
         sqrt_k = tf.math.sqrt(tf.cast(self.k, x.dtype))
         x_y = self._mobius_add(-x, y)
-        norm_x_y = tf.linalg.norm(x_y, axis=-1, keepdims=True)
         eps = utils.get_eps(x)
+        norm_x_y = tf.sqrt(
+            tf.maximum(
+                tf.reduce_sum(x_y * x_y, axis=-1, keepdims=True), eps * eps
+            )
+        )
         tanh = tf.clip_by_value(sqrt_k * norm_x_y, -1.0 + eps, 1.0 - eps)
         lambda_x = self._lambda(x, keepdims=True)
-        return 2 * (x_y / norm_x_y) * tf.math.atanh(tanh) / (sqrt_k * lambda_x)
+        log = 2 * (x_y / norm_x_y) * tf.math.atanh(tanh) / (sqrt_k * lambda_x)
+        return tf.where(norm_x_y > eps, log, tf.zeros_like(log))
 
     retr = exp
 
@@ -152,18 +162,24 @@ class Poincare(Manifold):
         sqrt_k = tf.math.sqrt(tf.cast(self.k, x.dtype))
         norm_u = tf.linalg.norm(u, axis=-1, keepdims=True)
         y = tf.math.tanh(sqrt_k * t / 2.0) * u / (norm_u * sqrt_k)
-        return self._mobius_add(x, y)
+        return tf.where(norm_u <= 0, x, self._mobius_add(x, y))
 
     def exp0(self, u):
         """Perform an exponential map from the origin"""
         sqrt_k = tf.math.sqrt(tf.cast(self.k, u.dtype))
-        norm_u = tf.linalg.norm(u, axis=-1, keepdims=True)
+        eps = utils.get_eps(u)
+        norm_u = tf.sqrt(
+            tf.maximum(tf.reduce_sum(u * u, axis=-1, keepdims=True), eps * eps)
+        )
         return tf.math.tanh(sqrt_k * norm_u) * u / (sqrt_k * norm_u)
 
     def log0(self, y):
         """Perform a logarithmic map from the origin"""
         sqrt_k = tf.math.sqrt(tf.cast(self.k, y.dtype))
-        norm_y = tf.linalg.norm(y, axis=-1, keepdims=True)
+        eps = utils.get_eps(y)
+        norm_y = tf.sqrt(
+            tf.maximum(tf.reduce_sum(y * y, axis=-1, keepdims=True), eps * eps)
+        )
         return tf.math.atanh(sqrt_k * norm_y) * y / (sqrt_k * norm_y)
 
     def ptransp0(self, y, v):

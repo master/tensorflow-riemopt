@@ -17,7 +17,7 @@ from tensorflow_riemopt.manifolds.euclidean import Euclidean
             Product((Euclidean(), (3,)), (Sphere(), (2,))),
         ],
         shape=[(5,), (2, 5), (2, 2, 5)],
-        dtype=[tf.float64],
+        dtype=[tf.float32, tf.float64],
     )
 )
 class ProductTest(tf.test.TestCase, parameterized.TestCase):

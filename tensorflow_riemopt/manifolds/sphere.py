@@ -27,9 +27,9 @@ class Sphere(Manifold):
         return utils.allclose(inner, tf.zeros_like(inner), atol, rtol)
 
     def dist(self, x, y, keepdims=False):
-        inner = self.inner(x, x, y, keepdims=keepdims)
-        cos_angle = tf.clip_by_value(inner, -1.0, 1.0)
-        return tf.math.acos(cos_angle)
+        diff = tf.linalg.norm(x - y, axis=-1, keepdims=keepdims)
+        summ = tf.linalg.norm(x + y, axis=-1, keepdims=keepdims)
+        return 2.0 * tf.math.atan2(diff, summ)
 
     def inner(self, x, u, v, keepdims=False):
         return tf.reduce_sum(u * v, axis=-1, keepdims=keepdims)

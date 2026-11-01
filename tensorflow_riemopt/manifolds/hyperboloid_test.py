@@ -15,7 +15,7 @@ from tensorflow_riemopt.manifolds.hyperboloid import Hyperboloid
         mode=["graph", "eager"],
         manifold=[Hyperboloid(), Hyperboloid(k=5.0)],
         shape=[(5,), (2, 2)],
-        dtype=[tf.float64],
+        dtype=[tf.float32, tf.float64],
     )
 )
 class HyperboloidTest(tf.test.TestCase, parameterized.TestCase):

@@ -12,7 +12,7 @@ from tensorflow_riemopt.manifolds.sphere import Sphere
         mode=["graph", "eager"],
         manifold=[Sphere()],
         shape=[(2,), (2, 2)],
-        dtype=[tf.float64],
+        dtype=[tf.float32, tf.float64],
     )
 )
 class SphereTest(tf.test.TestCase, parameterized.TestCase):
