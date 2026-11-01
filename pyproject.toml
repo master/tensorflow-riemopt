@@ -4,13 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tensorflow-riemopt"
-version = "0.3.1"
+version = "0.3.2"
 description = "a library for optimization on Riemannian manifolds"
 readme = "README.md"
 authors = [{ name = "Oleg Smirnov", email = "oleg.smirnov@gmail.com" }]
 license = "MIT"
 license-files = ["LICENSE"]
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.14"
 dependencies = ["tensorflow"]
 keywords = ["tensorflow", "optimization", "machine learning"]
 classifiers = [
@@ -46,6 +46,7 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["tensorflow_riemopt"]
+exclude = ["**/.gitkeep"]
 
 [tool.hatch.build.targets.sdist]
 include = ["/tensorflow_riemopt", "/README.md", "/LICENSE", "/pyproject.toml"]

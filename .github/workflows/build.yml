@@ -10,15 +10,15 @@ jobs:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Set up uv
-      uses: astral-sh/setup-uv@v7
+      uses: astral-sh/setup-uv@v10.3.3
       with:
         python-version: ${{ matrix.python-version }}
         enable-cache: true
     - name: Install dependencies
       run: |
-        uv sync --group dev
+        uv sync --locked --group dev
     - name: Lint with black
       run: |
         uv run black --line-length 80 --check --diff tensorflow_riemopt
