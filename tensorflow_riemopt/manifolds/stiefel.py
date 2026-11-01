@@ -90,7 +90,7 @@ class StiefelEuclidean(_Stiefel):
         raise NotImplementedError
 
     def log(self, x, y):
-        return NotImplementedError
+        raise NotImplementedError
 
     def transp(self, x, y, v):
         return self.proju(y, v)
@@ -152,7 +152,7 @@ class StiefelCanonical(_Stiefel):
         raise NotImplementedError
 
     def log(self, x, y):
-        return NotImplementedError
+        raise NotImplementedError
 
 
 class StiefelCayley(_Stiefel):
@@ -216,4 +216,4 @@ class StiefelCayley(_Stiefel):
         raise NotImplementedError
 
     def log(self, x, y):
-        return NotImplementedError
+        raise NotImplementedError

@@ -28,7 +28,7 @@ class TestInvariants(tf.test.TestCase):
             x_rand = random_constant(shape=shape, dtype=dtype)
             x = manifold.projx(x_rand)
             y_rand = random_constant(shape=shape, dtype=dtype)
-            y = manifold.projx(x_rand)
+            y = manifold.projx(y_rand)
             dist_xy = manifold.dist(x, y)
             dist_yx = manifold.dist(y, x)
             self.assertAllCloseAccordingToType(dist_xy, dist_yx)
@@ -175,7 +175,7 @@ class TestInvariants(tf.test.TestCase):
             x_rand = random_constant(shape=shape, dtype=dtype)
             x = manifold.projx(x_rand)
             y_rand = random_constant(shape=shape, dtype=dtype)
-            y = manifold.projx(x_rand)
+            y = manifold.projx(y_rand)
             m = manifold.pairmean(x, y)
             m_on_manifold = manifold.check_point_on_manifold(m)
             if not tf.executing_eagerly():

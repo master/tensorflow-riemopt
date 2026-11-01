@@ -54,10 +54,6 @@ class SpecialOrthogonal(Manifold):
         unflip = tf.sign(tf.sign(tf.linalg.diag_part(r)) + 0.5)
         return q * unflip[..., tf.newaxis, :]
 
-    def retr2(self, x, u):
-        _s, u, vt = tf.linalg.svd(x + x @ u)
-        return u @ vt
-
     def log(self, x, y):
         xty = utils.transposem(x) @ y
         u = utils.logm(xty)

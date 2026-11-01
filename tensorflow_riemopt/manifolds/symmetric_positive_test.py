@@ -32,11 +32,23 @@ class SymmetricPositiveTest(tf.test.TestCase, parameterized.TestCase):
 
     test_ptransp_inverse = TestInvariants.check_ptransp_inverse
 
-    test_ptransp_inner = TestInvariants.check_ptransp_inner
-
     test_geodesic = TestInvariants.check_geodesic
 
     test_pairmean = TestInvariants.check_pairmean
+
+
+@combinations.generate(
+    combinations.combine(
+        mode=["graph", "eager"],
+        manifold=[SPDAffineInvariant(), SPDLogCholesky(), SPDLogEuclidean()],
+        shape=[(2, 3, 3), (3, 3)],
+        dtype=[tf.float64],
+    )
+)
+class SymmetricPositivePtranspInnerTest(
+    tf.test.TestCase, parameterized.TestCase
+):
+    test_ptransp_inner = TestInvariants.check_ptransp_inner
 
 
 @combinations.generate(
@@ -57,6 +69,10 @@ class SymmetricPositiveLETest(tf.test.TestCase, parameterized.TestCase):
     test_proj = TestInvariants.check_proj
 
     test_exp_log_inverse = TestInvariants.check_exp_log_inverse
+
+    test_transp_retr = TestInvariants.check_transp_retr
+
+    test_ptransp_inverse = TestInvariants.check_ptransp_inverse
 
     test_geodesic = TestInvariants.check_geodesic
 

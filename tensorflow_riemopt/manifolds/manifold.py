@@ -100,11 +100,11 @@ class Manifold(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def transp(self, x, y, v):
         r"""Perform a vector transport :math:`\mathfrak{T}_{x\to y}(v)`."""
-        return NotImplementedError
+        raise NotImplementedError
 
     def ptransp(self, x, y, v):
         r"""Perform a parallel transport :math:`\operatorname{P}_{x\to y}(v)`."""
-        return NotImplementedError
+        raise NotImplementedError
 
     def random(self, shape, dtype=tf.float32):
         """Sample a random point on the manifold."""

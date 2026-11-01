@@ -101,12 +101,6 @@ class SPDAffineInvariant(_SymmetricPositiveDefinite):
         e = tf.linalg.sqrtm(y @ tf.linalg.inv(x))
         return e @ v @ utils.transposem(e)
 
-    def ptransp1(self, x, y, v):
-        x_sqrt = tf.linalg.sqrtm(x)
-        x_sqrt_inv = tf.linalg.inv(x_sqrt)
-        h = tf.linalg.expm(0.5 * x_sqrt_inv @ self.log(x, y) @ x_sqrt_inv)
-        return x_sqrt @ h @ x_sqrt_inv @ v @ x_sqrt_inv @ h @ x_sqrt
-
     transp = ptransp
 
     def pairmean(self, x, y):
@@ -179,8 +173,10 @@ class SPDLogEuclidean(_SymmetricPositiveDefinite):
     def pairmean(self, x, y):
         return tf.linalg.expm((utils.logm(x) + utils.logm(y)) / 2.0)
 
-    def transp(self, x, y, v):
-        raise NotImplementedError
+    def ptransp(self, x, y, v):
+        return self._diff_exp(utils.logm(y), self._diff_log(x, v))
+
+    transp = ptransp
 
 
 class SPDLogCholesky(_SymmetricPositiveDefinite):

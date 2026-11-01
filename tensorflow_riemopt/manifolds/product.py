@@ -102,7 +102,6 @@ class Product(Manifold):
 
     def dist(self, x, y, keepdims=False):
         dists = self._product_fn("dist", x, y, keepdims=True)
-        shape = tf.concat([tf.shape(x)[:-1], [-1]], axis=-1)
         sq_dists = tf.reduce_sum(dists * dists, axis=-1, keepdims=keepdims)
         return tf.math.sqrt(sq_dists)
 
@@ -136,6 +135,3 @@ class Product(Manifold):
 
     def geodesic(self, x, u, t):
         return self._product_fn("geodesic", x, u, t=t)
-
-    def pairmean(self, x, y):
-        return self._product_fn("pairmean", x, y)
