@@ -2,6 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/tensorflow-riemopt.svg)](https://pypi.org/project/tensorflow-riemopt/)
 [![arXiv](https://img.shields.io/badge/arXiv-2105.13921-b31b1b.svg)](https://arxiv.org/abs/2105.13921)
+[![JOSS](https://joss.theoj.org/papers/639147b8f06a6d210aaa94935827fcb5/status.svg)](https://joss.theoj.org/papers/639147b8f06a6d210aaa94935827fcb5)
 [![Build Status](https://github.com/master/tensorflow-riemopt/actions/workflows/build.yml/badge.svg)](https://github.com/master/tensorflow-riemopt/actions)
 [![Documentation Status](https://readthedocs.org/projects/tensorflow-riemopt/badge/?version=latest)](https://tensorflow-riemopt.readthedocs.io)
 [![Coverage Status](https://coveralls.io/repos/github/master/tensorflow-riemopt/badge.svg)](https://coveralls.io/github/master/tensorflow-riemopt)
