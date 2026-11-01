@@ -12,16 +12,30 @@ A library for manifold-constrained optimization in TensorFlow.
 
 ## Installation
 
+To install a package from PyPI:
+
+```bash
+pip install tensorflow-riemopt
+```
+
+To add it to a project managed by [uv](https://docs.astral.sh/uv/):
+
+```bash
+uv add tensorflow-riemopt
+```
+
 To install the latest development version from GitHub:
 
 ```bash
 pip install git+https://github.com/master/tensorflow-riemopt.git
 ```
 
-To install a package from PyPI:
+To work on the library from a clone of the repository:
 
 ```bash
-pip install tensorflow-riemopt
+git clone https://github.com/master/tensorflow-riemopt.git
+cd tensorflow-riemopt
+uv sync --group dev
 ```
 
 ## Features

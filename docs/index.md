@@ -18,6 +18,12 @@ Install via PyPI:
 pip install tensorflow-riemopt
 ```
 
+Or add it to a project managed by uv:
+
+```bash
+uv add tensorflow-riemopt
+```
+
 ## Quickstart
 
 ```python
