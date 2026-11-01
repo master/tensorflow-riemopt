@@ -1,7 +1,7 @@
 # Configuration file for the Sphinx documentation builder.
 import os
 import sys
-from importlib.metadata import version
+import importlib.metadata
 
 # Add project root to sys.path for autodoc
 sys.path.insert(0, os.path.abspath('..'))
@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'tensorflow-riemopt'
 author = 'Oleg Smirnov'
 # The full version, including alpha/beta/rc tags
-release = version('tensorflow-riemopt')
+release = importlib.metadata.version('tensorflow-riemopt')
 
 extensions = [
     'sphinx.ext.autodoc',
