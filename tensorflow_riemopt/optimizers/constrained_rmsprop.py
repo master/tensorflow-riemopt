@@ -128,7 +128,7 @@ class ConstrainedRMSprop(OptimizerV2):
         )
         rms.assign(rms_t)
         if self.centered:
-            mg.assign(manifold.transp(var, var_t, mg_t))
+            mg.assign(mg_t)
         var_update = var.assign(var_t)
         if self.stabilize is not None:
             self._stabilize(var)
@@ -173,8 +173,7 @@ class ConstrainedRMSprop(OptimizerV2):
         rms.scatter_update(IndexedSlices(rms_t_values, indices))
 
         if self.centered:
-            mg_t_transp = manifold.transp(var_values, var_t_values, mg_t_values)
-            mg.scatter_update(IndexedSlices(mg_t_transp, indices))
+            mg.scatter_update(IndexedSlices(mg_t_values, indices))
 
         var_update = var.scatter_update(IndexedSlices(var_t_values, indices))
         if self.stabilize is not None:
@@ -186,9 +185,6 @@ class ConstrainedRMSprop(OptimizerV2):
         if math_ops.floor_mod(self.iterations, self.stabilize) == 0:
             manifold = get_manifold(var)
             var.assign(manifold.projx(var))
-            if self.centered:
-                mg = self.get_slot(var, "mg")
-                mg.assign(manifold.proju(var, mg))
 
     def set_weights(self, weights):
         params = self.weights
