@@ -106,7 +106,7 @@ class ConstrainedRMSprop(OptimizerV2):
 
         manifold = get_manifold(var)
         grad = manifold.egrad2rgrad(var, grad)
-        grad_sq = manifold.egrad2rgrad(var, grad * grad)
+        grad_sq = grad * grad
 
         rms = self.get_slot(var, "rms")
         rms_t = (
@@ -126,7 +126,7 @@ class ConstrainedRMSprop(OptimizerV2):
             * grad
             / (math_ops.sqrt(denom_t) + coefficients["epsilon"]),
         )
-        rms.assign(manifold.transp(var, var_t, rms_t))
+        rms.assign(rms_t)
         if self.centered:
             mg.assign(manifold.transp(var, var_t, mg_t))
         var_update = var.assign(var_t)
@@ -143,7 +143,7 @@ class ConstrainedRMSprop(OptimizerV2):
 
         manifold = get_manifold(var)
         grad = manifold.egrad2rgrad(var, grad)
-        grad_sq = manifold.egrad2rgrad(var, grad * grad)
+        grad_sq = grad * grad
 
         rms = self.get_slot(var, "rms")
         rms_scaled_g_values = grad_sq * coefficients["one_minus_rho"]
@@ -170,8 +170,7 @@ class ConstrainedRMSprop(OptimizerV2):
             / (math_ops.sqrt(denom_t) + coefficients["epsilon"]),
         )
 
-        rms_t_transp = manifold.transp(var_values, var_t_values, rms_t_values)
-        rms.scatter_update(IndexedSlices(rms_t_transp, indices))
+        rms.scatter_update(IndexedSlices(rms_t_values, indices))
 
         if self.centered:
             mg_t_transp = manifold.transp(var_values, var_t_values, mg_t_values)
@@ -187,8 +186,6 @@ class ConstrainedRMSprop(OptimizerV2):
         if math_ops.floor_mod(self.iterations, self.stabilize) == 0:
             manifold = get_manifold(var)
             var.assign(manifold.projx(var))
-            rms = self.get_slot(var, "rms")
-            rms.assign(manifold.proju(var, rms))
             if self.centered:
                 mg = self.get_slot(var, "mg")
                 mg.assign(manifold.proju(var, mg))
