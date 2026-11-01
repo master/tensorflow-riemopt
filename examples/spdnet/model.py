@@ -20,10 +20,13 @@ class BiMap(tf.keras.layers.Layer):
         self.output_dim = output_dim
 
     def build(self, input_shape):
+        stiefel = StiefelEuclidean()
         self.w = self.add_weight(
-            "w", shape=[int(input_shape[-1]), self.output_dim]
+            name="w",
+            shape=[int(input_shape[-1]), self.output_dim],
+            initializer=stiefel.random,
         )
-        assign_to_manifold(self.w, StiefelEuclidean())
+        assign_to_manifold(self.w, stiefel)
 
     def call(self, inputs):
         return utils.transposem(self.w) @ inputs @ self.w

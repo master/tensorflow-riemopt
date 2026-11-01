@@ -26,10 +26,9 @@ class RotMap(tf.keras.layers.Layer):
         `num_rows` = 3, `num_cols` = 3, `temp_dim` is the number of frames,
         and `spatial_dim` is the number of edges.
         """
-        input_shape = input_shape.as_list()
         so = SpecialOrthogonal()
         self.w = self.add_weight(
-            "w",
+            name="w",
             shape=[input_shape[-4], input_shape[-2], input_shape[-1]],
             initializer=so.random,
         )
