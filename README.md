@@ -65,7 +65,7 @@ v_ = S.transp(x, y, v)
 ### Manifolds
 
  - `manifolds.Cholesky` - manifold of lower triangular matrices with positive diagonal elements
- - `manifolds.Euclidian` - unconstrained manifold with the Euclidean metric
+ - `manifolds.Euclidean` - unconstrained manifold with the Euclidean metric
  - `manifolds.Grassmannian` - manifold of `p`-dimensional linear subspaces of the `n`-dimensional space
  - `manifolds.Hyperboloid` - manifold of `n`-dimensional hyperbolic space embedded in the `n+1`-dimensional Minkowski space
  - `manifolds.Poincare` - the Poincaré ball model of the hyperbolic space
@@ -87,7 +87,7 @@ optimizers for sparse and dense updates in both Eager and Graph modes.
 
  - `optimizers.RiemannianSGD` - Riemannian Gradient Descent
  - `optimizers.RiemannianAdam` - Riemannian Adam and AMSGrad
- - `optimizers.ConstrainedRMSProp` - Constrained RMSProp
+ - `optimizers.ConstrainedRMSprop` - Constrained RMSProp
 
 ### Layers
 
@@ -99,8 +99,6 @@ optimizers for sparse and dense updates in both Eager and Graph modes.
  - [SPDNet](examples/spdnet/) - Huang, Zhiwu, and Luc Van Gool. "A Riemannian network for SPD matrix learning." Proceedings of the Thirty-First AAAI Conference on Artificial Intelligence. AAAI Press, 2017.
  - [LieNet](examples/lienet/) - Huang, Zhiwu, et al. "Deep learning on Lie groups for skeleton-based action recognition." Proceedings of the IEEE conference on computer vision and pattern recognition. 2017.
  - [GrNet](examples/grnet/) - Huang, Zhiwu, Jiqing Wu, and Luc Van Gool. "Building Deep Networks on Grassmann Manifolds." AAAI. AAAI Press, 2018.
- - [Hyperbolic Neural Network](examples/hyperbolic_nn/) - Ganea, Octavian, Gary Bécigneul, and Thomas Hofmann. "Hyperbolic neural networks." Advances in neural information processing systems. 2018.
- - [Poincaré GloVe](examples/poincare_glove/) - Tifrea, Alexandru, Gary Becigneul, and Octavian-Eugen Ganea. "Poincaré Glove: Hyperbolic Word Embeddings." International Conference on Learning Representations. 2018.
 
 ## References
 

@@ -6,28 +6,20 @@ Implementation of SPDNet [1], a Riemannian network for SPD matrix learning.
 
 ## Requirements
 
- * Python 3.6+
+ * Python 3.10+
  * SciPy
  * NumPy
- * TensorFlow 2.0+
- * TensorFlow RiemOpt
+ * TensorFlow 2.16+
+ * tensorflow-riemopt
 
 ## Training
 
-Configure `gcloud` to use Python 3:
+From the `examples` directory, train SPDNet locally on the Acted Facial Expression in Wild [2] dataset:
 
 ```bash
-gcloud config set ml_engine/local_python /usr/bin/python3
-```
-
-Train SPDNet locally on the Acted Facial Expression in Wild [2] dataset:
-
-```bash
-gcloud ai-platform local train \
-       --module-name spdnet.task \
-       --package-path . \
-       -- \
-       --data-dir data
+uv run --with scipy --with requests --with tqdm \
+       python -m spdnet.task \
+       --data-dir data \
        --job-dir ckpt
 ```
 

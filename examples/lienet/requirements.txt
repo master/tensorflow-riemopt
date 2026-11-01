@@ -1,2 +1,4 @@
 scipy
+requests
+tqdm
 tensorflow-riemopt

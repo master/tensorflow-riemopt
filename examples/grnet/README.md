@@ -6,28 +6,20 @@ Implementation of GrNet [1], a deep network on Grassmann manifolds.
 
 ## Requirements
 
- * Python 3.6+
+ * Python 3.10+
  * SciPy
  * NumPy
- * TensorFlow 2.0+
- * TensorFlow RiemOpt
+ * TensorFlow 2.16+
+ * tensorflow-riemopt
 
 ## Training
 
-Configure `gcloud` to use Python 3:
+From the `examples` directory, train GrNet locally on the Acted Facial Expression in Wild [2] dataset:
 
 ```bash
-gcloud config set ml_engine/local_python /usr/bin/python3
-```
-
-Train GrNet locally on the Acted Facial Expression in Wild [2] dataset:
-
-```bash
-gcloud ai-platform local train \
-       --module-name grnet.task \
-       --package-path . \
-       -- \
-       --data-dir data
+PYTHONPATH=grnet uv run --with scipy --with requests --with tqdm \
+       python -m grnet.task \
+       --data-dir data \
        --job-dir ckpt
 ```
 
