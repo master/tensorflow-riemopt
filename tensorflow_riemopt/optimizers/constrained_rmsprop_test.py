@@ -24,8 +24,9 @@ class ConstrainedRMSpropTest(test.TestCase, parameterized.TestCase):
     def testSparse(self):
         for dtype in [dtypes.half, dtypes.float32, dtypes.float64]:
             for centered in [False, True]:
-                with ops.Graph().as_default(), self.cached_session(
-                    use_gpu=True
+                with (
+                    ops.Graph().as_default(),
+                    self.cached_session(use_gpu=True),
                 ):
                     var0_np = np.array(
                         [1.0, 1.0, 2.0], dtype=dtype.as_numpy_dtype
