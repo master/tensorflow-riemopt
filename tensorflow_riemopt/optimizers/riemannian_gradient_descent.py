@@ -4,37 +4,32 @@ Bonnabel, Silvere. "Stochastic gradient descent on Riemannian manifolds."
 IEEE Transactions on Automatic Control 58.9 (2013): 2217-2229.
 """
 
-from tensorflow.python.eager import def_function
-from tensorflow.python.framework import ops
-from tensorflow.python.keras import backend_config
-from tensorflow.python.keras.utils import generic_utils
-from tensorflow.python.ops import array_ops
-from tensorflow.python.ops import control_flow_ops
-from tensorflow.python.ops import math_ops
-from tensorflow.python.ops import state_ops
-from tensorflow.python.ops import gen_training_ops
-from tensorflow.python.framework.tensor import Tensor
-from tensorflow.python.framework.indexed_slices import IndexedSlices
-from tensorflow.python.keras.optimizer_v2.optimizer_v2 import OptimizerV2
+import keras
+import tensorflow as tf
 
 from tensorflow_riemopt.variable import get_manifold
 
 
-@generic_utils.register_keras_serializable(name="RiemannianSGD")
-class RiemannianSGD(OptimizerV2):
+def _rows(gradient, variable):
+    if isinstance(gradient, tf.IndexedSlices):
+        indices, segments = tf.unique(gradient.indices)
+        grad = tf.math.unsorted_segment_sum(
+            gradient.values, segments, tf.shape(indices)[0]
+        )
+        gather = lambda t: tf.gather(t, indices)
+        scatter = lambda t: tf.IndexedSlices(t, indices)
+    else:
+        grad, gather, scatter = gradient, tf.convert_to_tensor, tf.identity
+    return tf.cast(grad, variable.dtype), gather, scatter
+
+
+@keras.saving.register_keras_serializable(
+    package="tensorflow_riemopt", name="RiemannianSGD"
+)
+class RiemannianSGD(keras.optimizers.SGD):
     """Optimizer that implements the Riemannian SGD algorithm."""
 
-    _HAS_AGGREGATE_GRAD = True
-
-    def __init__(
-        self,
-        learning_rate=0.01,
-        momentum=0.0,
-        nesterov=False,
-        stabilize=None,
-        name="RiemannianSGD",
-        **kwargs,
-    ):
+    def __init__(self, *args, stabilize=None, **kwargs):
         """Construct a new Riemannian SGD optimizer.
 
         Bonnabel, Silvere. "Stochastic gradient descent on Riemannian
@@ -42,146 +37,58 @@ class RiemannianSGD(OptimizerV2):
         2217-2229.
 
         Args:
-          learning_rate: A `Tensor`, floating point value, or a schedule that is a
-            `tf.keras.optimizers.schedules.LearningRateSchedule`, or a callable that
-            takes no arguments and returns the actual value to use, The learning
-            rate. Defaults to 0.001.
-          momentum: A float hyperparameter >= 0 that accelerates gradient descent
-            in the relevant direction and dampens oscillations. Defaults to 0, i.e.,
-            vanilla gradient descent.
-          nesterov: boolean. Whether to apply Nesterov momentum. Defaults to `False`.
           stabilize: Project variables back to manifold every `stabilize` steps.
             Defaults to `None`.
-          name: Optional name for the operations created when applying gradients.
-            Defaults to "RiemannianSGD".
-          **kwargs: Keyword arguments. Allowed to be one of `"clipnorm"` or
-            `"clipvalue"`. `"clipnorm"` (float) clips gradients by norm; `"clipvalue"`
-            (float) clips gradients by value.
+          **kwargs: Keyword arguments of `keras.optimizers.SGD`. `weight_decay`
+            and `use_ema` are not supported.
 
         """
-
-        super().__init__(name, **kwargs)
-        self._set_hyper("learning_rate", kwargs.get("lr", learning_rate))
-        self._set_hyper("decay", self._initial_decay)
-        self._momentum = False
-        if isinstance(momentum, Tensor) or callable(momentum) or momentum > 0:
-            self._momentum = True
-        if isinstance(momentum, (int, float)) and (
-            momentum < 0 or momentum > 1
-        ):
-            raise ValueError("`momentum` must be between [0, 1].")
-        self._set_hyper("momentum", momentum)
-        self.nesterov = nesterov
+        super().__init__(*args, **kwargs)
+        if self.weight_decay is not None:
+            raise ValueError("weight_decay is not supported on manifolds")
+        if self.use_ema:
+            raise ValueError("use_ema is not supported on manifolds")
         self.stabilize = stabilize
 
-    def _create_slots(self, var_list):
-        if self._momentum:
-            for var in var_list:
-                self.add_slot(var, "momentum")
-
-    def _prepare_local(self, var_device, var_dtype, apply_state):
-        super()._prepare_local(var_device, var_dtype, apply_state)
-        apply_state[(var_device, var_dtype)]["momentum"] = array_ops.identity(
-            self._get_hyper("momentum", var_dtype)
+    def update_step(self, gradient, variable, learning_rate):
+        lr = tf.cast(learning_rate, variable.dtype)
+        manifold = get_manifold(
+            self._trainable_variables[self._get_variable_index(variable)]
         )
-
-    @def_function.function(experimental_compile=True)
-    def _resource_apply_dense(self, grad, var, apply_state=None):
-        var_device, var_dtype = var.device, var.dtype.base_dtype
-        coefficients = (apply_state or {}).get(
-            (var_device, var_dtype)
-        ) or self._fallback_apply_state(var_device, var_dtype)
-
-        manifold = get_manifold(var)
-        grad = manifold.egrad2rgrad(var, grad)
-
-        if self._momentum:
-            momentum = self.get_slot(var, "momentum")
-            momentum_t = momentum * self._momentum - grad * coefficients["lr_t"]
+        grad, gather, scatter = _rows(gradient, variable)
+        x = gather(variable)
+        rgrad = manifold.egrad2rgrad(x, grad)
+        if self.momentum != 0:
+            m = self.momentums[self._get_variable_index(variable)]
+            momentum = tf.cast(self.momentum, variable.dtype)
+            m_t = gather(m) * momentum - rgrad * lr
             if self.nesterov:
-                var_t = manifold.retr(
-                    var,
-                    momentum_t * self._momentum - grad * coefficients["lr_t"],
-                )
+                x_t = manifold.retr(x, m_t * momentum - rgrad * lr)
             else:
-                var_t = manifold.retr(var, momentum_t)
-            momentum.assign(manifold.transp(var, var_t, momentum_t))
-            var_update = var.assign(var_t)
+                x_t = manifold.retr(x, m_t)
+            self.assign(m, scatter(manifold.transp(x, x_t, m_t)))
         else:
-            var_update = var.assign(
-                manifold.retr(var, -grad * coefficients["lr_t"])
-            )
-
+            x_t = manifold.retr(x, -rgrad * lr)
+        self.assign(variable, scatter(x_t))
         if self.stabilize is not None:
-            self._stabilize(var)
-        return var_update
+            self._stabilize(variable, manifold)
 
-    @def_function.function(experimental_compile=True)
-    def _resource_apply_sparse(self, grad, var, indices, apply_state=None):
-        var_device, var_dtype = var.device, var.dtype.base_dtype
-        coefficients = (apply_state or {}).get(
-            (var_device, var_dtype)
-        ) or self._fallback_apply_state(var_device, var_dtype)
-
-        manifold = get_manifold(var)
-        grad = manifold.egrad2rgrad(var, grad)
-
-        var_values = array_ops.gather(var, indices)
-
-        if self._momentum:
-            momentum = self.get_slot(var, "momentum")
-            momentum_t_values = (
-                array_ops.gather(momentum, indices) * self._momentum
-                - grad * coefficients["lr_t"]
-            )
-            if self.nesterov:
-                var_t_values = manifold.retr(
-                    var_values,
-                    momentum_t_values * self._momentum
-                    - grad * coefficients["lr_t"],
+    def _stabilize(self, variable, manifold):
+        def project():
+            self.assign(variable, manifold.projx(variable))
+            if self.momentum != 0:
+                m = self.momentums[self._get_variable_index(variable)]
+                self.assign(
+                    m, manifold.proju(variable, tf.convert_to_tensor(m))
                 )
-            else:
-                var_t_values = manifold.retr(var_values, momentum_t_values)
-            momentum_transp_values = manifold.transp(
-                var_values, var_t_values, momentum_t_values
-            )
-            momentum.scatter_update(
-                IndexedSlices(momentum_transp_values, indices)
-            )
-            var_update = var.scatter_update(
-                IndexedSlices(var_t_values, indices)
-            )
-        else:
-            var_t_values = manifold.retr(
-                var_values, -grad * coefficients["lr_t"]
-            )
-            var_update = var.scatter_update(
-                IndexedSlices(var_t_values, indices)
-            )
 
-        if self.stabilize is not None:
-            self._stabilize(var)
-        return var_update
-
-    @def_function.function(experimental_compile=True)
-    def _stabilize(self, var):
-        if math_ops.floor_mod(self.iterations, self.stabilize) == 0:
-            manifold = get_manifold(var)
-            var.assign(manifold.projx(var))
-            if self._momentum:
-                momentum = self.get_slot(var, "momentum")
-                momentum.assign(manifold.proju(var, momentum))
+        tf.cond(
+            tf.equal(tf.math.floormod(self.iterations, self.stabilize), 0),
+            project,
+            lambda: None,
+        )
 
     def get_config(self):
         config = super().get_config()
-        config.update(
-            {
-                "learning_rate": self._serialize_hyperparameter(
-                    "learning_rate"
-                ),
-                "decay": self._serialize_hyperparameter("decay"),
-                "momentum": self._serialize_hyperparameter("momentum"),
-                "nesterov": self.nesterov,
-            }
-        )
+        config.update({"stabilize": self.stabilize})
         return config

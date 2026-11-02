@@ -1735,9 +1735,11 @@ wheels = [
 
 [[package]]
 name = "tensorflow-riemopt"
-version = "0.3.2"
+version = "0.4.0"
 source = { editable = "." }
 dependencies = [
+    { name = "keras", version = "3.12.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "keras", version = "3.15.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "tensorflow" },
 ]
 
@@ -1761,7 +1763,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "tensorflow" }]
+requires-dist = [
+    { name = "keras", specifier = ">=3.3" },
+    { name = "tensorflow", specifier = ">=2.16" },
+]
 
 [package.metadata.requires-dev]
 dev = [

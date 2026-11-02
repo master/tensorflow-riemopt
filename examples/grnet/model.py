@@ -24,7 +24,7 @@ class FRMap(tf.keras.layers.Layer):
     def build(self, input_shape):
         grassmannian = Grassmannian()
         self.w = self.add_weight(
-            "w",
+            name="w",
             shape=[self.num_proj, input_shape[-2], self.output_dim],
             initializer=grassmannian.random,
         )

@@ -5,39 +5,20 @@ constrained optimization techniques for deep learning." Proceedings of the
 IEEE Conference on Computer Vision and Pattern Recognition. 2018.
 """
 
-import numpy as np
+import keras
+import tensorflow as tf
 
-from tensorflow.python.eager import def_function
-from tensorflow.python.framework import ops
-from tensorflow.python.keras import backend_config
-from tensorflow.python.keras.utils import generic_utils
-from tensorflow.python.ops import array_ops
-from tensorflow.python.ops import control_flow_ops
-from tensorflow.python.ops import math_ops
-from tensorflow.python.ops import state_ops
-from tensorflow.python.ops import gen_training_ops
-from tensorflow.python.framework.indexed_slices import IndexedSlices
-from tensorflow.python.keras.optimizer_v2.optimizer_v2 import OptimizerV2
-
+from tensorflow_riemopt.optimizers.riemannian_gradient_descent import _rows
 from tensorflow_riemopt.variable import get_manifold
 
 
-@generic_utils.register_keras_serializable(name="ConstrainedRMSprop")
-class ConstrainedRMSprop(OptimizerV2):
+@keras.saving.register_keras_serializable(
+    package="tensorflow_riemopt", name="ConstrainedRMSprop"
+)
+class ConstrainedRMSprop(keras.optimizers.RMSprop):
     """Optimizer that implements the RMSprop algorithm."""
 
-    _HAS_AGGREGATE_GRAD = True
-
-    def __init__(
-        self,
-        learning_rate=0.001,
-        rho=0.9,
-        epsilon=1e-7,
-        centered=False,
-        stabilize=None,
-        name="ConstrainedRMSprop",
-        **kwargs,
-    ):
+    def __init__(self, *args, stabilize=None, **kwargs):
         """Construct a new Constrained RMSprop optimizer.
 
         Kumar Roy, Soumava, Zakaria Mhammedi, and Mehrtash Harandi. "Geometry
@@ -45,165 +26,52 @@ class ConstrainedRMSprop(OptimizerV2):
         of the IEEE Conference on Computer Vision and Pattern Recognition. 2018.
 
         Args:
-          learning_rate: A `Tensor`, floating point value, or a schedule that is a
-            `tf.keras.optimizers.schedules.LearningRateSchedule`, or a callable
-            that takes no arguments and returns the actual value to use. The
-            learning rate. Defeaults to 0.001.
-          rho: Discounting factor for the history/coming gradient. Defaults to 0.9.
-          epsilon: A small constant for numerical stability. This epsilon is
-            "epsilon hat" in the Kingma and Ba paper (in the formula just before
-            Section 2.1), not the epsilon in Algorithm 1 of the paper. Defaults to
-            1e-7.
-          centered: Boolean. If `True`, gradients are normalized by the estimated
-            variance of the gradient; if False, by the uncentered second moment.
-            Setting this to `True` may help with training, but is slightly more
-            expensive in terms of computation and memory. Defaults to `False`.
           stabilize: Project variables back to manifold every `stabilize` steps.
             Defaults to `None`.
-          name: Optional name prefix for the operations created when applying
-            gradients. Defaults to "ConstrainedRMSprop".
-          **kwargs: keyword arguments. Allowed to be {`clipnorm`, `clipvalue`, `lr`,
-            `decay`}. `clipnorm` is clip gradients by norm; `clipvalue` is clip
-            gradients by value, `decay` is included for backward compatibility to
-            allow time inverse decay of learning rate. `lr` is included for backward
-            compatibility, recommended to use `learning_rate` instead.
+          **kwargs: Keyword arguments of `keras.optimizers.RMSprop`.
+            `weight_decay`, `use_ema` and a nonzero `momentum` are not
+            supported.
         """
-        super().__init__(name, **kwargs)
-        self._set_hyper("learning_rate", kwargs.get("lr", learning_rate))
-        self._set_hyper("decay", self._initial_decay)
-        self._set_hyper("rho", rho)
-
-        self.epsilon = epsilon or backend_config.epsilon()
-        self.centered = centered
+        super().__init__(*args, **kwargs)
+        if self.weight_decay is not None:
+            raise ValueError("weight_decay is not supported on manifolds")
+        if self.use_ema:
+            raise ValueError("use_ema is not supported on manifolds")
+        if self.momentum != 0:
+            raise ValueError("momentum is not supported by ConstrainedRMSprop")
         self.stabilize = stabilize
 
-    def _create_slots(self, var_list):
-        for var in var_list:
-            self.add_slot(var, "rms")
-        if self.centered:
-            for var in var_list:
-                self.add_slot(var, "mg")
-
-    def _prepare_local(self, var_device, var_dtype, apply_state):
-        super()._prepare_local(var_device, var_dtype, apply_state)
-
-        rho = array_ops.identity(self._get_hyper("rho", var_dtype))
-        apply_state[(var_device, var_dtype)].update(
-            dict(
-                neg_lr_t=-apply_state[(var_device, var_dtype)]["lr_t"],
-                epsilon=ops.convert_to_tensor(self.epsilon, var_dtype),
-                rho=rho,
-                one_minus_rho=1.0 - rho,
-            )
+    def update_step(self, gradient, variable, learning_rate):
+        lr = tf.cast(learning_rate, variable.dtype)
+        manifold = get_manifold(
+            self._trainable_variables[self._get_variable_index(variable)]
         )
-
-    @def_function.function(experimental_compile=True)
-    def _resource_apply_dense(self, grad, var, apply_state=None):
-        var_device, var_dtype = var.device, var.dtype.base_dtype
-        coefficients = (apply_state or {}).get(
-            (var_device, var_dtype)
-        ) or self._fallback_apply_state(var_device, var_dtype)
-
-        manifold = get_manifold(var)
-        grad = manifold.egrad2rgrad(var, grad)
-        grad_sq = grad * grad
-
-        rms = self.get_slot(var, "rms")
-        rms_t = (
-            coefficients["rho"] * rms + coefficients["one_minus_rho"] * grad_sq
-        )
+        grad, gather, scatter = _rows(gradient, variable)
+        i = self._get_variable_index(variable)
+        rms = self._velocities[i]
+        x = gather(variable)
+        rgrad = manifold.egrad2rgrad(x, grad)
+        rms_t = self.rho * gather(rms) + (1 - self.rho) * rgrad * rgrad
         denom_t = rms_t
         if self.centered:
-            mg = self.get_slot(var, "mg")
-            mg_t = (
-                coefficients["rho"] * mg + coefficients["one_minus_rho"] * grad
-            )
-            denom_t -= math_ops.square(mg_t)
-
-        var_t = manifold.retr(
-            var,
-            -coefficients["lr_t"]
-            * grad
-            / (math_ops.sqrt(denom_t) + coefficients["epsilon"]),
-        )
-        rms.assign(rms_t)
-        if self.centered:
-            mg.assign(mg_t)
-        var_update = var.assign(var_t)
+            mg = self._average_gradients[i]
+            mg_t = self.rho * gather(mg) + (1 - self.rho) * rgrad
+            denom_t = denom_t - tf.square(mg_t)
+            self.assign(mg, scatter(mg_t))
+        x_t = manifold.retr(x, -lr * rgrad / tf.sqrt(denom_t + self.epsilon))
+        self.assign(rms, scatter(rms_t))
+        self.assign(variable, scatter(x_t))
         if self.stabilize is not None:
-            self._stabilize(var)
-        return var_update
+            self._stabilize(variable, manifold)
 
-    @def_function.function(experimental_compile=True)
-    def _resource_apply_sparse(self, grad, var, indices, apply_state=None):
-        var_device, var_dtype = var.device, var.dtype.base_dtype
-        coefficients = (apply_state or {}).get(
-            (var_device, var_dtype)
-        ) or self._fallback_apply_state(var_device, var_dtype)
-
-        manifold = get_manifold(var)
-        grad = manifold.egrad2rgrad(var, grad)
-        grad_sq = grad * grad
-
-        rms = self.get_slot(var, "rms")
-        rms_scaled_g_values = grad_sq * coefficients["one_minus_rho"]
-        rms_t_values = (
-            array_ops.gather(rms, indices) * coefficients["rho"]
-            + rms_scaled_g_values
+    def _stabilize(self, variable, manifold):
+        tf.cond(
+            tf.equal(tf.math.floormod(self.iterations, self.stabilize), 0),
+            lambda: self.assign(variable, manifold.projx(variable)),
+            lambda: None,
         )
-
-        denom_t = rms_t_values
-        if self.centered:
-            mg = self.get_slot(var, "mg")
-            mg_scaled_g_values = grad * coefficients["one_minus_rho"]
-            mg_t_values = (
-                array_ops.gather(mg, indices) * coefficients["rho"]
-                + mg_scaled_g_values
-            )
-            denom_t -= math_ops.square(mg_t_values)
-
-        var_values = array_ops.gather(var, indices)
-        var_t_values = manifold.retr(
-            var_values,
-            coefficients["neg_lr_t"]
-            * grad
-            / (math_ops.sqrt(denom_t) + coefficients["epsilon"]),
-        )
-
-        rms.scatter_update(IndexedSlices(rms_t_values, indices))
-
-        if self.centered:
-            mg.scatter_update(IndexedSlices(mg_t_values, indices))
-
-        var_update = var.scatter_update(IndexedSlices(var_t_values, indices))
-        if self.stabilize is not None:
-            self._stabilize(var)
-        return var_update
-
-    @def_function.function(experimental_compile=True)
-    def _stabilize(self, var):
-        if math_ops.floor_mod(self.iterations, self.stabilize) == 0:
-            manifold = get_manifold(var)
-            var.assign(manifold.projx(var))
-
-    def set_weights(self, weights):
-        params = self.weights
-        if len(params) == len(weights) + 1:
-            weights = [np.array(0)] + weights
-        super().set_weights(weights)
 
     def get_config(self):
         config = super().get_config()
-        config.update(
-            {
-                "learning_rate": self._serialize_hyperparameter(
-                    "learning_rate"
-                ),
-                "decay": self._serialize_hyperparameter("decay"),
-                "rho": self._serialize_hyperparameter("rho"),
-                "epsilon": self.epsilon,
-                "centered": self.centered,
-                "stabilize": self.stabilize,
-            }
-        )
+        config.update({"stabilize": self.stabilize})
         return config
