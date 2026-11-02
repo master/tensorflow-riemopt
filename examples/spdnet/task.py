@@ -19,7 +19,7 @@ def get_args():
     parser.add_argument('--data-dir', type=str, required=True, help='data dir')
     parser.add_argument(
         '--num-epochs',
-        type=float,
+        type=int,
         default=50,
         help='number of training epochs (default 50)',
     )
@@ -50,7 +50,6 @@ def train_and_evaluate(args):
     val = utils.load_matlab_data("Y1", args.data_dir, DATA_FOLDER, "val")
     train_dataset = (
         tf.data.Dataset.from_tensor_slices(train)
-        .repeat(args.num_epochs)
         .shuffle(args.shuffle_buffer)
         .batch(args.batch_size, drop_remainder=True)
     )
@@ -61,7 +60,7 @@ def train_and_evaluate(args):
     spdnet = model.create_model(args.learning_rate, num_classes=AFEW_CLASSES)
 
     os.makedirs(args.job_dir, exist_ok=True)
-    checkpoint_path = os.path.join(args.job_dir, "afew-spdnet.ckpt")
+    checkpoint_path = os.path.join(args.job_dir, "afew-spdnet.weights.h5")
     cp_callback = tf.keras.callbacks.ModelCheckpoint(
         filepath=checkpoint_path, save_weights_only=True, verbose=1
     )

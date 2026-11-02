@@ -11,7 +11,7 @@ EPS = 1e-7
 
 def rot_angle(inputs):
     cos = (tf.linalg.trace(inputs) - 1) / 2.0
-    return tf.math.acos(tf.clip_by_value(cos, -1.0, 1.0))
+    return tf.math.acos(tf.clip_by_value(cos, -1.0 + EPS, 1.0 - EPS))
 
 
 @tf.keras.utils.register_keras_serializable(name="RotMap")
@@ -98,7 +98,7 @@ class LogMap(tf.keras.layers.Layer):
         thetas = rot_angle(inputs)[..., tf.newaxis, tf.newaxis]
         zeros = tf.zeros_like(thetas)
         skew = (inputs - utils.transposem(inputs)) / 2.0
-        log = skew * thetas / tf.math.sin(thetas)
+        log = skew * thetas / tf.maximum(tf.math.sin(thetas), EPS)
         return tf.where(thetas < EPS, zeros, log)
 
 

@@ -18,7 +18,7 @@ skeleton-based action recognition.
 From the `examples` directory, train LieNet locally on the G3D-Gaming [2] dataset:
 
 ```bash
-PYTHONPATH=lienet uv run --with scipy --with requests --with tqdm \
+PYTHONPATH=lienet uv run --with scipy --with requests --with tqdm --with tensorboard \
        python -m lienet.task \
        --data-dir data \
        --job-dir ckpt

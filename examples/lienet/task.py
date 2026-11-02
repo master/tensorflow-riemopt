@@ -21,9 +21,9 @@ def get_args():
     parser.add_argument('--data-dir', type=str, required=True, help='data dir')
     parser.add_argument(
         '--num-epochs',
-        type=float,
+        type=int,
         default=100,
-        help='number of training epochs (default 50)',
+        help='number of training epochs (default 100)',
     )
     parser.add_argument(
         '--batch-size',
@@ -65,7 +65,6 @@ def train_and_evaluate(args):
 
     train_dataset = (
         tf.data.Dataset.from_tensor_slices(train)
-        .repeat(args.num_epochs)
         .shuffle(args.shuffle_buffer)
         .batch(args.batch_size, drop_remainder=True)
     )
@@ -76,7 +75,7 @@ def train_and_evaluate(args):
     lienet = model.create_model(args.learning_rate, num_classes=G3D_CLASSES)
 
     os.makedirs(args.job_dir, exist_ok=True)
-    checkpoint_path = os.path.join(args.job_dir, "g3d-lienet.ckpt")
+    checkpoint_path = os.path.join(args.job_dir, "g3d-lienet.weights.h5")
     cp_callback = tf.keras.callbacks.ModelCheckpoint(
         filepath=checkpoint_path, save_weights_only=True, verbose=1
     )

@@ -17,7 +17,7 @@ Implementation of SPDNet [1], a Riemannian network for SPD matrix learning.
 From the `examples` directory, train SPDNet locally on the Acted Facial Expression in Wild [2] dataset:
 
 ```bash
-uv run --with scipy --with requests --with tqdm \
+uv run --with scipy --with requests --with tqdm --with tensorboard \
        python -m spdnet.task \
        --data-dir data \
        --job-dir ckpt

@@ -17,7 +17,7 @@ Implementation of GrNet [1], a deep network on Grassmann manifolds.
 From the `examples` directory, train GrNet locally on the Acted Facial Expression in Wild [2] dataset:
 
 ```bash
-PYTHONPATH=grnet uv run --with scipy --with requests --with tqdm \
+PYTHONPATH=grnet uv run --with scipy --with requests --with tqdm --with tensorboard \
        python -m grnet.task \
        --data-dir data \
        --job-dir ckpt
