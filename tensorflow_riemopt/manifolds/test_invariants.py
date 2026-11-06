@@ -27,7 +27,7 @@ class TestInvariants(tf.test.TestCase):
         config = tf.keras.utils.serialize_keras_object(manifold)
         restored = tf.keras.utils.deserialize_keras_object(config)
         self.assertIs(type(restored), type(manifold))
-        self.assertEqual(restored.get_config(), manifold.get_config())
+        self.assertEqual(repr(restored), repr(manifold))
 
     def check_dist(self, manifold, shape, dtype):
         """Check the distance axioms"""
