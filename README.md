@@ -49,6 +49,7 @@ expressions are not available, the library provides numerical approximations.
 <img align="right" width="400" src="https://github.com/master/tensorflow-riemopt/blob/master/examples/usage.png?raw=true">
 
 ```python
+import tensorflow as tf
 import tensorflow_riemopt as riemopt
 
 S = riemopt.manifolds.Sphere()
