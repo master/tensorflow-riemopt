@@ -50,6 +50,7 @@ class _Stiefel(Manifold):
         return u @ utils.transposem(v)
 
 
+@tf.keras.utils.register_keras_serializable(package="tensorflow_riemopt")
 class StiefelEuclidean(_Stiefel):
     """Manifold of orthonormal p-frames in the n-dimensional space endowed with
     the Euclidean inner product.
@@ -96,6 +97,7 @@ class StiefelEuclidean(_Stiefel):
         return self.proju(y, v)
 
 
+@tf.keras.utils.register_keras_serializable(package="tensorflow_riemopt")
 class StiefelCanonical(_Stiefel):
     """Manifold of orthonormal p-frames in the n-dimensional space endowed with
     the canonical inner product derived from the quotient space
@@ -155,6 +157,7 @@ class StiefelCanonical(_Stiefel):
         raise NotImplementedError
 
 
+@tf.keras.utils.register_keras_serializable(package="tensorflow_riemopt")
 class StiefelCayley(_Stiefel):
     """Manifold of orthonormal p-frames in the n-dimensional space endowed with
     the Euclidean inner product.
@@ -178,6 +181,9 @@ class StiefelCayley(_Stiefel):
         """
         self.num_iter = num_iter
         super().__init__()
+
+    def get_config(self):
+        return {"num_iter": self.num_iter}
 
     def inner(self, x, u, v, keepdims=False):
         return tf.reduce_sum(u * v, axis=[-2, -1], keepdims=keepdims)

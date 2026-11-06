@@ -24,6 +24,8 @@ from tensorflow_riemopt.manifolds.stiefel import StiefelCayley
 class StiefelTest(tf.test.TestCase, parameterized.TestCase):
     test_random = TestInvariants.check_random
 
+    test_config = TestInvariants.check_config
+
     test_inner = TestInvariants.check_inner
 
     test_proj = TestInvariants.check_proj

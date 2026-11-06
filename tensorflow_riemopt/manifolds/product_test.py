@@ -23,6 +23,8 @@ from tensorflow_riemopt.manifolds.euclidean import Euclidean
 class ProductTest(tf.test.TestCase, parameterized.TestCase):
     test_random = TestInvariants.check_random
 
+    test_config = TestInvariants.check_config
+
     test_dist = TestInvariants.check_dist
 
     test_inner = TestInvariants.check_inner

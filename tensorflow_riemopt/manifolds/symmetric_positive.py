@@ -53,6 +53,7 @@ class _SymmetricPositiveDefinite(Manifold):
         return 0.5 * (utils.transposem(u) + u)
 
 
+@tf.keras.utils.register_keras_serializable(package="tensorflow_riemopt")
 class SPDAffineInvariant(_SymmetricPositiveDefinite):
     """Manifold of symmetric positive definite matrices endowed with the
     affine-invariant metric.
@@ -109,6 +110,7 @@ class SPDAffineInvariant(_SymmetricPositiveDefinite):
         return x_sqrt @ tf.linalg.sqrtm(x_sqrt_inv @ y @ x_sqrt_inv) @ x_sqrt
 
 
+@tf.keras.utils.register_keras_serializable(package="tensorflow_riemopt")
 class SPDLogEuclidean(_SymmetricPositiveDefinite):
     """Manifold of symmetric positive definite matrices endowed with the
     Log-Euclidean metric.
@@ -182,6 +184,7 @@ class SPDLogEuclidean(_SymmetricPositiveDefinite):
     transp = ptransp
 
 
+@tf.keras.utils.register_keras_serializable(package="tensorflow_riemopt")
 class SPDLogCholesky(_SymmetricPositiveDefinite):
     """Manifold of symmetric positive definite matrices endowed with the
     Log-Cholesky metric.

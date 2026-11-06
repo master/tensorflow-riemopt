@@ -20,6 +20,8 @@ from tensorflow_riemopt.manifolds.symmetric_positive import SPDLogCholesky
 class SPDAffineInvariantTest(tf.test.TestCase, parameterized.TestCase):
     test_random = TestInvariants.check_random
 
+    test_config = TestInvariants.check_config
+
     test_inner = TestInvariants.check_inner
 
     test_proj = TestInvariants.check_proj
@@ -43,6 +45,8 @@ class SPDAffineInvariantTest(tf.test.TestCase, parameterized.TestCase):
 )
 class SPDLogCholeskyTest(tf.test.TestCase, parameterized.TestCase):
     test_random = TestInvariants.check_random
+
+    test_config = TestInvariants.check_config
 
     test_dist = TestInvariants.check_dist
 
@@ -69,6 +73,8 @@ class SPDLogCholeskyTest(tf.test.TestCase, parameterized.TestCase):
 )
 class SPDLogEuclideanTest(tf.test.TestCase, parameterized.TestCase):
     test_random = TestInvariants.check_random
+
+    test_config = TestInvariants.check_config
 
     test_dist = TestInvariants.check_dist
 

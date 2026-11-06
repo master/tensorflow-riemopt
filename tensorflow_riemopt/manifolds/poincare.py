@@ -6,6 +6,7 @@ from tensorflow_riemopt.manifolds.manifold import Manifold
 from tensorflow_riemopt.manifolds import utils
 
 
+@tf.keras.utils.register_keras_serializable(package="tensorflow_riemopt")
 class Poincare(Manifold):
     """Manifold of `math:`n`-dimensional hyperbolic space as embedded in the
     Poincaré ball model.
@@ -35,6 +36,9 @@ class Poincare(Manifold):
         return "{} (k={}, ndims={}) manifold".format(
             self.name, self.k, self.ndims
         )
+
+    def get_config(self):
+        return {"k": self.k}
 
     def _check_point_on_manifold(self, x, atol, rtol):
         k = tf.cast(self.k, x.dtype)

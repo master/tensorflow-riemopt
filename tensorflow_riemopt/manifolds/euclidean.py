@@ -5,6 +5,7 @@ import tensorflow as tf
 from tensorflow_riemopt.manifolds.manifold import Manifold
 
 
+@tf.keras.utils.register_keras_serializable(package="tensorflow_riemopt")
 class Euclidean(Manifold):
     name = "Euclidean"
     ndims = 0
@@ -17,6 +18,9 @@ class Euclidean(Manifold):
         """
         super().__init__()
         self.ndims = ndims
+
+    def get_config(self):
+        return {"ndims": self.ndims}
 
     def _check_point_on_manifold(self, x, atol, rtol):
         return tf.constant(True)

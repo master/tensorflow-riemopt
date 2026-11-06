@@ -15,5 +15,15 @@ class ManifoldEmbedding(tf.keras.layers.Embedding):
         assign_to_manifold(self.embeddings, self.manifold)
 
     def get_config(self):
-        config = {"manifold": self.manifold}
+        config = {
+            "manifold": tf.keras.utils.serialize_keras_object(self.manifold)
+        }
         return dict(list(super().get_config().items()) + list(config.items()))
+
+    @classmethod
+    def from_config(cls, config):
+        config = config.copy()
+        manifold = tf.keras.utils.deserialize_keras_object(
+            config.pop("manifold")
+        )
+        return cls(manifold=manifold, **config)
