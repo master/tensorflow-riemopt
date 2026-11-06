@@ -18,6 +18,8 @@ from tensorflow_riemopt.manifolds.cholesky import Cholesky
 class CholeskyTest(tf.test.TestCase, parameterized.TestCase):
     test_random = TestInvariants.check_random
 
+    test_config = TestInvariants.check_config
+
     test_dist = TestInvariants.check_dist
 
     test_inner = TestInvariants.check_inner

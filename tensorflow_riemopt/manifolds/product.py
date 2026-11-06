@@ -7,6 +7,7 @@ from operator import mul
 from tensorflow_riemopt.manifolds.manifold import Manifold
 
 
+@tf.keras.utils.register_keras_serializable(package="tensorflow_riemopt")
 class Product(Manifold):
     """Product space of manifolds."""
 
@@ -54,6 +55,23 @@ class Product(Manifold):
             for m, shape in zip(self._manifolds, self._shapes)
         ]
         return " × ".join(names)
+
+    def get_config(self):
+        return {
+            "manifolds": [
+                (tf.keras.utils.serialize_keras_object(m), list(shape))
+                for m, shape in zip(self._manifolds, self._shapes)
+            ]
+        }
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(
+            *[
+                (tf.keras.utils.deserialize_keras_object(m), tuple(shape))
+                for m, shape in config["manifolds"]
+            ]
+        )
 
     def _check_shape(self, shape):
         return self._indices[-1] == shape[-1]

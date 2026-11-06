@@ -18,6 +18,8 @@ from tensorflow_riemopt.manifolds.sphere import Sphere
 class SphereTest(tf.test.TestCase, parameterized.TestCase):
     test_random = TestInvariants.check_random
 
+    test_config = TestInvariants.check_config
+
     test_dist = TestInvariants.check_dist
 
     test_inner = TestInvariants.check_inner

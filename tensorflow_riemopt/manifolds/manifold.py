@@ -10,6 +10,15 @@ class Manifold(metaclass=abc.ABCMeta):
         """Returns a string representation of the particular manifold."""
         return "{} (ndims={}) manifold".format(self.name, self.ndims)
 
+    def get_config(self):
+        """Return the constructor arguments of the manifold."""
+        return {}
+
+    @classmethod
+    def from_config(cls, config):
+        """Instantiate the manifold from its constructor arguments."""
+        return cls(**config)
+
     def check_shape(self, shape_or_tensor):
         """Check if given shape is compatible with the manifold."""
         shape = (
@@ -34,7 +43,7 @@ class Manifold(metaclass=abc.ABCMeta):
         )
 
     def _check_shape(self, shape):
-        return tf.constant(True)
+        return True
 
     @abc.abstractmethod
     def _check_point_on_manifold(self, x, atol, rtol):

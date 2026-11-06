@@ -6,6 +6,7 @@ from tensorflow_riemopt.manifolds.manifold import Manifold
 from tensorflow_riemopt.manifolds import utils
 
 
+@tf.keras.utils.register_keras_serializable(package="tensorflow_riemopt")
 class SpecialOrthogonal(Manifold):
     """Manifold of square orthogonal matrices of determinant 1."""
 
