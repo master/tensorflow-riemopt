@@ -136,7 +136,7 @@ v_y = S.transp(x, y, v)
 
 ![Geometric operations on the sphere $\mathbb{S}^2$. The exponential map takes
  $x$ along $v$ to $y$, and vector transport carries $u$ and $v$ from
- $T_x\mathcal{M}$ to $T_y\mathcal{M}$.\label{fig:sphere}](usage.png){
+ $T_x\mathcal{M}$ to $T_y\mathcal{M}$.\label{fig:sphere}](examples/usage.png){
  width=60% }
 
 The library implements the exponential and logarithmic map in closed form
