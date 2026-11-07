@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tensorflow-riemopt"
-version = "0.4.0"
+version = "0.4.1"
 description = "a library for optimization on Riemannian manifolds"
 readme = "README.md"
 authors = [{ name = "Oleg Smirnov", email = "oleg.smirnov@gmail.com" }]
