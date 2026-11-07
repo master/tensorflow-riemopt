@@ -38,7 +38,7 @@ class Poincare(Manifold):
         )
 
     def get_config(self):
-        return {"k": self.k}
+        return {"k": float(self.k)}
 
     def _check_point_on_manifold(self, x, atol, rtol):
         k = tf.cast(self.k, x.dtype)
