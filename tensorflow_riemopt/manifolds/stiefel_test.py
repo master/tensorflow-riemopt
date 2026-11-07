@@ -12,16 +12,60 @@ from tensorflow_riemopt.manifolds.stiefel import StiefelCayley
 @combinations.generate(
     combinations.combine(
         mode=["graph", "eager"],
-        manifold=[
-            StiefelEuclidean(),
-            StiefelCanonical(),
-            StiefelCayley(num_iter=100),
-        ],
+        manifold=[StiefelEuclidean()],
         shape=[(2, 5, 3), (5, 3)],
         dtype=[tf.float32, tf.float64],
     )
 )
-class StiefelTest(tf.test.TestCase, parameterized.TestCase):
+class StiefelEuclideanTest(tf.test.TestCase, parameterized.TestCase):
+    test_random = TestInvariants.check_random
+
+    test_config = TestInvariants.check_config
+
+    test_inner = TestInvariants.check_inner
+
+    test_proj = TestInvariants.check_proj
+
+    test_transp_retr = TestInvariants.check_transp_retr
+
+
+@combinations.generate(
+    combinations.combine(
+        mode=["graph", "eager"],
+        manifold=[StiefelCanonical(num_iter=20)],
+        shape=[(2, 5, 3), (5, 3)],
+        dtype=[tf.float32, tf.float64],
+    )
+)
+class StiefelCanonicalTest(tf.test.TestCase, parameterized.TestCase):
+    test_random = TestInvariants.check_random
+
+    test_config = TestInvariants.check_config
+
+    test_dist = TestInvariants.check_dist
+
+    test_inner = TestInvariants.check_inner
+
+    test_proj = TestInvariants.check_proj
+
+    test_exp_log_inverse = TestInvariants.check_exp_log_inverse
+
+    test_transp_retr = TestInvariants.check_transp_retr
+
+    test_geodesic = TestInvariants.check_geodesic
+
+    test_pairmean = TestInvariants.check_pairmean
+
+
+@combinations.generate(
+    combinations.combine(
+        mode=["graph", "eager"],
+        manifold=[StiefelCayley(num_iter=100)],
+        shape=[(2, 5, 3), (5, 3)],
+        dtype=[tf.float32, tf.float64],
+    )
+)
+class StiefelCayleyTest(tf.test.TestCase, parameterized.TestCase):
     test_random = TestInvariants.check_random
 
     test_config = TestInvariants.check_config

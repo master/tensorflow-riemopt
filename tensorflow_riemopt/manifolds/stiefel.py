@@ -111,6 +111,23 @@ class StiefelCanonical(_Stiefel):
 
     name = "Canonical Stiefel"
 
+    def __init__(self, num_iter=30):
+        """Instantiate the Stiefel manifold with the canonical metric.
+
+        Args:
+          num_iter: number of iterations of the matrix-algebraic logarithm.
+        """
+        self.num_iter = num_iter
+        super().__init__()
+
+    def __repr__(self):
+        return "{} (num_iter={}, ndims={}) manifold".format(
+            self.name, self.num_iter, self.ndims
+        )
+
+    def get_config(self):
+        return {"num_iter": self.num_iter}
+
     def inner(self, x, u, v, keepdims=False):
         xtu = utils.transposem(x) @ u
         xtv = utils.transposem(x) @ v
@@ -144,17 +161,34 @@ class StiefelCanonical(_Stiefel):
         logw = blockm(xtu, -utils.transposem(r), r, tf.zeros_like(r))
         w = tf.linalg.expm(t * logw)
         z = tf.concat([eye, tf.zeros_like(utu)], axis=-2)
-        y = tf.concat([x, u], axis=-1) @ w @ z
+        y = tf.concat([x, q], axis=-1) @ w @ z
         return y
 
     def transp(self, x, y, v):
         return self.proju(y, v)
 
     def dist(self, x, y, keepdims=False):
-        raise NotImplementedError
+        return self.norm(x, self.log(x, y), keepdims=keepdims)
 
     def log(self, x, y):
-        raise NotImplementedError
+        p = tf.shape(x)[-1]
+        xty = utils.transposem(x) @ y
+        q, r = tf.linalg.qr(y - x @ xty)
+        xty_r = tf.concat([xty, r], axis=-2)
+        w, _r = tf.linalg.qr(xty_r, full_matrices=True)
+        w = tf.concat([xty_r, w[..., p:]], axis=-1)
+        sign = tf.sign(tf.linalg.det(w))[..., tf.newaxis, tf.newaxis]
+        w = tf.concat(
+            [w[..., :p], w[..., p : p + 1] * sign, w[..., p + 1 :]], axis=-1
+        )
+        for _ in range(self.num_iter):
+            logw = utils.logm(w)
+            logw = (logw - utils.transposem(logw)) / 2.0
+            phi = tf.linalg.expm(-logw[..., p:, p:])
+            w = tf.concat([w[..., :p], w[..., p:] @ phi], axis=-1)
+        u = x @ logw[..., :p, :p] + q @ logw[..., p:, :p]
+        xtu = utils.transposem(x) @ u
+        return u - x @ (xtu + utils.transposem(xtu)) / 2.0
 
 
 @tf.keras.utils.register_keras_serializable(package="tensorflow_riemopt")
@@ -181,6 +215,11 @@ class StiefelCayley(_Stiefel):
         """
         self.num_iter = num_iter
         super().__init__()
+
+    def __repr__(self):
+        return "{} (num_iter={}, ndims={}) manifold".format(
+            self.name, self.num_iter, self.ndims
+        )
 
     def get_config(self):
         return {"num_iter": self.num_iter}
