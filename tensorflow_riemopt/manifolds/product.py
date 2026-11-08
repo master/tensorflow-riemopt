@@ -29,7 +29,7 @@ class Product(Manifold):
         >>> S = manifolds.Sphere()
         >>> torus = manifolds.Product((S, (2,)), (S, (2,)))
 
-        >>> St = manifolds.EuclideanStiefel()
+        >>> St = manifolds.StiefelEuclidean()
         >>> St_2 = manifolds.Product((St, (5, 3)), (St, (5, 3)))
         """
         self._indices = [0]

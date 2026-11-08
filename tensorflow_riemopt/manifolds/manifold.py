@@ -55,7 +55,7 @@ class Manifold(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def dist(self, x, y, keepdims=False):
-        """Compute the distance between two points :math:`x` and :math:`y: along a
+        """Compute the distance between two points :math:`x` and :math:`y` along a
         geodesic.
         """
         raise NotImplementedError

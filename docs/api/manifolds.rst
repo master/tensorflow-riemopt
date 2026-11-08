@@ -6,8 +6,6 @@ The module implements a variety of Riemannian manifolds as Python classes. Each 
 Certain manifolds (e.g., SPD and Stiefel) can be endowed with different Riemannian metrics, resulting in distinct operations implemented in their corresponding classes.
 
 .. automodule:: tensorflow_riemopt.manifolds
-
-.. automodule:: tensorflow_riemopt.manifolds
    :members:
    :undoc-members:
    :show-inheritance:

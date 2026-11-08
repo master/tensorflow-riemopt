@@ -8,7 +8,7 @@ from tensorflow_riemopt.manifolds import utils
 
 @tf.keras.utils.register_keras_serializable(package="tensorflow_riemopt")
 class Hyperboloid(Manifold):
-    """Manifold of `math:`n`-dimensional hyperbolic space as embedded in
+    """Manifold of :math:`n`-dimensional hyperbolic space as embedded in
     :math:`n+1`-dimensional Minkowski space, also known as the Lorentz model.
 
     """
