@@ -130,6 +130,9 @@ class Product(Manifold):
     def proju(self, x, u):
         return self._product_fn("proju", x, u)
 
+    def egrad2rgrad(self, x, u):
+        return self._product_fn("egrad2rgrad", x, u)
+
     def projx(self, x):
         return self._product_fn("projx", x)
 
