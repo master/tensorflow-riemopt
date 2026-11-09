@@ -8,7 +8,7 @@ from tensorflow_riemopt.manifolds import utils
 
 @tf.keras.utils.register_keras_serializable(package="tensorflow_riemopt")
 class Poincare(Manifold):
-    """Manifold of `math:`n`-dimensional hyperbolic space as embedded in the
+    """Manifold of :math:`n`-dimensional hyperbolic space as embedded in the
     Poincaré ball model.
 
     Nickel, Maximillian, and Douwe Kiela. "Poincaré embeddings for learning
