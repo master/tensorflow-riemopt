@@ -94,6 +94,21 @@ class TestInvariants(tf.test.TestCase):
                 u_on_tangent = self.evaluate(u_on_tangent)
             self.assertTrue(u_on_tangent)
 
+    def check_egrad2rgrad(self, manifold, shape, dtype):
+        """Check the Riemannian gradient against the Euclidean gradient"""
+        with self.cached_session(use_gpu=True):
+            x = manifold.projx(random_constant(shape, dtype))
+            g = random_constant(shape, dtype)
+            v = manifold.proju(x, random_constant(shape, dtype))
+            r = manifold.egrad2rgrad(x, g)
+            r_on_tangent = manifold.check_vector_on_tangent(x, r)
+            if not tf.executing_eagerly():
+                r_on_tangent = self.evaluate(r_on_tangent)
+            self.assertTrue(r_on_tangent)
+            lhs = manifold.inner(x, r, v)
+            rhs = tf.reduce_sum(g * v, axis=list(range(-manifold.ndims, 0)))
+            self.assertAllCloseAccordingToType(lhs, rhs)
+
     def check_exp_log_inverse(self, manifold, shape, dtype):
         """Check that logarithmic map is the inverse of exponential map"""
         with self.cached_session(use_gpu=True):
