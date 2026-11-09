@@ -68,6 +68,9 @@ class Hyperboloid(Manifold):
         k = tf.cast(self.k, x.dtype)
         return u + self.inner(x, x, u, keepdims=True) * x / k
 
+    def egrad2rgrad(self, x, u):
+        return self.proju(x, tf.concat([-u[..., :1], u[..., 1:]], axis=-1))
+
     def projx(self, x):
         k = tf.cast(self.k, x.dtype)
         x0 = tf.math.sqrt(
@@ -101,7 +104,8 @@ class Hyperboloid(Manifold):
         inner = self.inner(x, log_xy, v, keepdims=True)
         return v - inner * (log_xy + log_yx) / dist_sq
 
-    transp = ptransp
+    def transp(self, x, y, v):
+        return self.proju(y, self.ptransp(x, y, v))
 
     def to_poincare(self, x, k):
         """Diffeomorphism that maps to the Poincaré ball"""
