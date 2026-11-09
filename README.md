@@ -117,6 +117,10 @@ optimizers for sparse and dense updates in both Eager and Graph modes.
 }
 ```
 
+## Contact
+
+For support or development inquiries, contact us at: [tensorflow-riemopt-dev@googlegroups.com](mailto:tensorflow-riemopt-dev@googlegroups.com)
+
 ### Contributing
 
 Report bugs and request features in the [issue tracker](https://github.com/master/tensorflow-riemopt/issues) along with a minimal snippet that reproduces the problem. To work on the code, clone the repository and run:
@@ -126,10 +130,6 @@ uv sync --locked --group dev
 uv run pytest -q tensorflow_riemopt
 uv run black --line-length 80 --check tensorflow_riemopt
 ```
-
-## Contact
-
-For support or development inquiries, contact us at: [tensorflow-riemopt-dev@googlegroups.com](mailto:tensorflow-riemopt-dev@googlegroups.com)
 
 ## Acknowledgment
 
