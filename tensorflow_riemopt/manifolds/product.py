@@ -104,7 +104,9 @@ class Product(Manifold):
         for i, m in enumerate(self._manifolds):
             arg_slices = [self._get_slice(arg, i) for arg in args]
             result = getattr(m, fn)(*arg_slices, **kwargs)
-            shape = tf.concat([tf.shape(result)[:-1], [-1]], axis=-1)
+            shape = tf.concat(
+                [tf.shape(result)[: -len(self._shapes[i])], [-1]], axis=-1
+            )
             results.append(tf.reshape(result, shape))
         return tf.concat(results, axis=-1)
 
