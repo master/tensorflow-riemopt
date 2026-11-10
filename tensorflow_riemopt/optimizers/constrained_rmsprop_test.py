@@ -5,7 +5,7 @@ import keras
 import numpy as np
 import tensorflow as tf
 
-from tensorflow_riemopt.manifolds import StiefelEuclidean
+from tensorflow_riemopt.manifolds import Hyperboloid, StiefelEuclidean
 from tensorflow_riemopt.optimizers.constrained_rmsprop import (
     ConstrainedRMSprop,
 )
@@ -75,40 +75,42 @@ class ConstrainedRMSpropOptimizerTest(tf.test.TestCase, parameterized.TestCase):
                         )
 
     def testManifold(self):
-        manifold = StiefelEuclidean()
-        for dtype in [tf.float32, tf.float64]:
-            for centered in [False, True]:
-                var0_np = manifold.random([5, 3], dtype=dtype).numpy()
-                var1_np = np.array([3.0, 4.0], dtype=dtype.as_numpy_dtype)
-                grads0 = tf.random.normal([5, 3], dtype=dtype)
-                grads1 = tf.constant([0.01, 0.01], dtype=dtype)
+        for manifold in [Hyperboloid(), StiefelEuclidean()]:
+            for dtype in [tf.float32, tf.float64]:
+                for centered in [False, True]:
+                    var0_np = manifold.random([5, 3], dtype=dtype).numpy()
+                    var1_np = np.array([3.0, 4.0], dtype=dtype.as_numpy_dtype)
+                    grads0 = tf.random.normal([5, 3], dtype=dtype)
+                    grads1 = tf.constant([0.01, 0.01], dtype=dtype)
 
-                var0 = tf.Variable(var0_np)
-                var1 = tf.Variable(var1_np)
-                var1_ref = tf.Variable(var1_np)
-                assign_to_manifold(var0, manifold)
+                    var0 = tf.Variable(var0_np)
+                    var1 = tf.Variable(var1_np)
+                    var1_ref = tf.Variable(var1_np)
+                    assign_to_manifold(var0, manifold)
 
-                opt = ConstrainedRMSprop(learning_rate=0.001, centered=centered)
-                opt_ref = keras.optimizers.RMSprop(
-                    learning_rate=0.001, centered=centered
-                )
+                    opt = ConstrainedRMSprop(
+                        learning_rate=0.001, centered=centered
+                    )
+                    opt_ref = keras.optimizers.RMSprop(
+                        learning_rate=0.001, centered=centered
+                    )
 
-                # Run 3 steps
-                for t in range(3):
-                    opt.apply_gradients(zip([grads0, grads1], [var0, var1]))
-                    opt_ref.apply_gradients([(grads1, var1_ref)])
+                    # Run 3 steps
+                    for t in range(3):
+                        opt.apply_gradients(zip([grads0, grads1], [var0, var1]))
+                        opt_ref.apply_gradients([(grads1, var1_ref)])
 
-                    # Validate updated params
-                    self.assertTrue(np.all(np.isfinite(var0.numpy())))
-                    self.assertTrue(
-                        manifold.check_point_on_manifold(
-                            var0, atol=1e-5, rtol=1e-5
+                        # Validate updated params
+                        self.assertTrue(np.all(np.isfinite(var0.numpy())))
+                        self.assertTrue(
+                            manifold.check_point_on_manifold(
+                                var0, atol=1e-5, rtol=1e-5
+                            )
                         )
-                    )
-                    self.assertNotAllClose(var0_np, var0.numpy())
-                    self.assertAllCloseAccordingToType(
-                        var1_ref.numpy(), var1.numpy()
-                    )
+                        self.assertNotAllClose(var0_np, var0.numpy())
+                        self.assertAllCloseAccordingToType(
+                            var1_ref.numpy(), var1.numpy()
+                        )
 
     def testCompileFit(self):
         manifold = StiefelEuclidean()

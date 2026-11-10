@@ -58,7 +58,8 @@ class ConstrainedRMSprop(keras.optimizers.RMSprop):
             mg_t = self.rho * gather(mg) + (1 - self.rho) * rgrad
             denom_t = denom_t - tf.square(mg_t)
             self.assign(mg, scatter(mg_t))
-        x_t = manifold.retr(x, -lr * rgrad / tf.sqrt(denom_t + self.epsilon))
+        step = manifold.proju(x, -lr * rgrad / tf.sqrt(denom_t + self.epsilon))
+        x_t = manifold.retr(x, step)
         self.assign(rms, scatter(rms_t))
         self.assign(variable, scatter(x_t))
         if self.stabilize is not None:
