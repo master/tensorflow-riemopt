@@ -45,6 +45,11 @@ class _Stiefel(Manifold):
         diff = utils.transposem(u) @ x + utils.transposem(x) @ u
         return utils.allclose(diff, tf.zeros_like(diff), atol, rtol)
 
+    def proju(self, x, u):
+        xtu = utils.transposem(x) @ u
+        xtu_sym = (utils.transposem(xtu) + xtu) / 2.0
+        return u - x @ xtu_sym
+
     def projx(self, x):
         _s, u, v = tf.linalg.svd(x)
         return u @ utils.transposem(v)
@@ -61,11 +66,6 @@ class StiefelEuclidean(_Stiefel):
 
     def inner(self, x, u, v, keepdims=False):
         return tf.reduce_sum(u * v, axis=[-2, -1], keepdims=keepdims)
-
-    def proju(self, x, u):
-        xtu = utils.transposem(x) @ u
-        xtu_sym = (utils.transposem(xtu) + xtu) / 2.0
-        return u - x @ xtu_sym
 
     def exp(self, x, u):
         return self.geodesic(x, u, 1.0)
@@ -137,14 +137,15 @@ class StiefelCanonical(_Stiefel):
         )
         return u_v_inner - 0.5 * xtu_xtv_inner
 
-    def proju(self, x, u):
+    def egrad2rgrad(self, x, u):
         return u - x @ utils.transposem(u) @ x
 
     def exp(self, x, u):
         return self.geodesic(x, u, 1.0)
 
     def retr(self, x, u):
-        xut = x @ utils.transposem(u)
+        xtu = utils.transposem(x) @ u
+        xut = x @ utils.transposem(u - 0.5 * x @ xtu)
         xut_sym = (xut - utils.transposem(xut)) / 2.0
         eye = tf.eye(
             tf.shape(xut)[-1], batch_shape=tf.shape(xut)[:-2], dtype=x.dtype
@@ -227,17 +228,12 @@ class StiefelCayley(_Stiefel):
     def inner(self, x, u, v, keepdims=False):
         return tf.reduce_sum(u * v, axis=[-2, -1], keepdims=keepdims)
 
-    def proju(self, x, u):
-        xtu = utils.transposem(x) @ u
-        w = (u - x @ xtu) @ utils.transposem(x)
-        return (w - utils.transposem(w)) @ x
-
     def exp(self, x, u):
         return self.geodesic(x, u, 1.0)
 
     def geodesic(self, x, u, t):
         xtu = utils.transposem(x) @ u
-        w_ = (u - x @ xtu) @ utils.transposem(x)
+        w_ = (u - 0.5 * x @ xtu) @ utils.transposem(x)
         w = w_ - utils.transposem(w_)
         eye = tf.linalg.eye(
             tf.shape(w)[-1], batch_shape=tf.shape(w)[:-2], dtype=x.dtype
@@ -247,7 +243,7 @@ class StiefelCayley(_Stiefel):
 
     def retr(self, x, u):
         xtu = utils.transposem(x) @ u
-        w_ = (u - x @ xtu) @ utils.transposem(x)
+        w_ = (u - 0.5 * x @ xtu) @ utils.transposem(x)
         w = w_ - utils.transposem(w_)
         y = x + u
         for _ in range(self.num_iter):

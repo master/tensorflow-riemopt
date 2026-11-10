@@ -105,6 +105,9 @@ class Poincare(Manifold):
         return tf.linalg.norm(u, axis=-1, keepdims=keepdims) * lambda_x
 
     def proju(self, x, u):
+        return u
+
+    def egrad2rgrad(self, x, u):
         lambda_x = self._lambda(x, keepdims=True)
         return u / lambda_x**2
 

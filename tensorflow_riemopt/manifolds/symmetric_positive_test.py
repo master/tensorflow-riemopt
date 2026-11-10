@@ -26,6 +26,8 @@ class SPDAffineInvariantTest(tf.test.TestCase, parameterized.TestCase):
 
     test_proj = TestInvariants.check_proj
 
+    test_egrad2rgrad = TestInvariants.check_egrad2rgrad
+
     test_exp_log_inverse = TestInvariants.check_exp_log_inverse
 
     test_transp_retr = TestInvariants.check_transp_retr
@@ -54,6 +56,8 @@ class SPDLogCholeskyTest(tf.test.TestCase, parameterized.TestCase):
 
     test_proj = TestInvariants.check_proj
 
+    test_egrad2rgrad = TestInvariants.check_egrad2rgrad
+
     test_exp_log_inverse = TestInvariants.check_exp_log_inverse
 
     test_transp_retr = TestInvariants.check_transp_retr
@@ -81,6 +85,8 @@ class SPDLogEuclideanTest(tf.test.TestCase, parameterized.TestCase):
     test_inner = TestInvariants.check_inner
 
     test_proj = TestInvariants.check_proj
+
+    test_egrad2rgrad = TestInvariants.check_egrad2rgrad
 
     test_exp_log_inverse = TestInvariants.check_exp_log_inverse
 

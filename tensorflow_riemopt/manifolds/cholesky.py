@@ -30,8 +30,8 @@ class Cholesky(Manifold):
         return is_lower_triang & is_pos_diag
 
     def _check_vector_on_tangent(self, x, u, atol, rtol):
-        lower_triang = tf.linalg.band_part(x, -1, 0)
-        return utils.allclose(x, lower_triang, atol, rtol)
+        lower_triang = tf.linalg.band_part(u, -1, 0)
+        return utils.allclose(u, lower_triang, atol, rtol)
 
     def _diag_and_strictly_lower(self, x):
         x = tf.linalg.band_part(x, -1, 0)
@@ -46,8 +46,10 @@ class Cholesky(Manifold):
         return tf.linalg.cholesky(spd)
 
     def proju(self, x, u):
-        u_sym = (utils.transposem(u) + u) / 2.0
-        u_diag, u_lower = self._diag_and_strictly_lower(u_sym)
+        return tf.linalg.band_part(u, -1, 0)
+
+    def egrad2rgrad(self, x, u):
+        u_diag, u_lower = self._diag_and_strictly_lower(u)
         x_diag = tf.linalg.diag_part(x)
         return u_lower + tf.linalg.diag(u_diag * x_diag**2)
 

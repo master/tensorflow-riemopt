@@ -81,6 +81,9 @@ class SPDAffineInvariant(_SymmetricPositiveDefinite):
         traces = tf.linalg.trace(x_sqrt_inv @ u @ x_inv @ v @ x_sqrt_inv)
         return traces[..., tf.newaxis, tf.newaxis] if keepdims else traces
 
+    def egrad2rgrad(self, x, u):
+        return x @ self.proju(x, u) @ x
+
     def exp(self, x, u):
         x_sqrt = tf.linalg.sqrtm(x)
         x_sqrt_inv = tf.linalg.inv(x_sqrt)
@@ -161,6 +164,10 @@ class SPDLogEuclidean(_SymmetricPositiveDefinite):
         dlog_u = self._diff_log(x, u)
         dlog_v = self._diff_log(x, v)
         return tf.reduce_sum(dlog_u * dlog_v, axis=[-2, -1], keepdims=keepdims)
+
+    def egrad2rgrad(self, x, u):
+        log_x = utils.logm(x)
+        return self._diff_exp(log_x, self._diff_exp(log_x, self.proju(x, u)))
 
     def exp(self, x, u):
         return tf.linalg.expm(utils.logm(x) + self._diff_log(x, u))
@@ -251,6 +258,13 @@ class SPDLogCholesky(_SymmetricPositiveDefinite):
         v_diff_chol = self.diff_to_cholesky(x, v)
         return self._cholesky.inner(
             x_chol, u_diff_chol, v_diff_chol, keepdims=keepdims
+        )
+
+    def egrad2rgrad(self, x, u):
+        x_chol = self.to_cholesky(x)
+        u_chol = 2.0 * self.proju(x, u) @ x_chol
+        return self.diff_from_cholesky(
+            x_chol, self._cholesky.egrad2rgrad(x_chol, u_chol)
         )
 
     def exp(self, x, u):

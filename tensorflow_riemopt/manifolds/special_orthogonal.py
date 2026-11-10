@@ -37,8 +37,10 @@ class SpecialOrthogonal(Manifold):
         return tf.reduce_sum(u * v, axis=[-2, -1], keepdims=keepdims)
 
     def proju(self, x, u):
-        xtu = utils.transposem(x) @ u
-        return (xtu - utils.transposem(xtu)) / 2.0
+        return (u - utils.transposem(u)) / 2.0
+
+    def egrad2rgrad(self, x, u):
+        return self.proju(x, utils.transposem(x) @ u)
 
     def projx(self, x):
         s, u, v = tf.linalg.svd(x)
