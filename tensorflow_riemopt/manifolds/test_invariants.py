@@ -135,6 +135,7 @@ class TestInvariants(tf.test.TestCase):
             y_on_manifold = manifold.check_point_on_manifold(y)
             if not tf.executing_eagerly():
                 y_on_manifold = self.evaluate(y_on_manifold)
+            self.assertTrue(y_on_manifold)
             v = manifold.proju(x, random_constant(shape, dtype))
             v_ = manifold.transp(x, y, v)
             v_on_tangent = manifold.check_vector_on_tangent(y, v_)
