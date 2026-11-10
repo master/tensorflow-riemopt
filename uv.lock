@@ -1735,7 +1735,7 @@ wheels = [
 
 [[package]]
 name = "tensorflow-riemopt"
-version = "0.4.2"
+version = "0.4.3"
 source = { editable = "." }
 dependencies = [
     { name = "keras", version = "3.12.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
