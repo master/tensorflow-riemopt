@@ -123,6 +123,7 @@ logarithmic maps and parallel transport are additional methods that can be
 added for adaptive optimization support.
 
 ```python
+import tensorflow as tf
 from tensorflow_riemopt.manifolds import Sphere
 
 S = Sphere()

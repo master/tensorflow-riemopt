@@ -34,7 +34,7 @@ from tensorflow_riemopt.variable import assign_to_manifold
 
 # Create a variable on the Grassmannian manifold (3×2 matrix)
 manifold = Grassmannian()
-x = tf.Variable(tf.random.uniform((3, 2)), dtype=tf.float32)
+x = tf.Variable(manifold.random((3, 2)))
 assign_to_manifold(x, manifold)
 
 # Define a simple loss (squared Frobenius norm)
