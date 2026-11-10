@@ -245,9 +245,11 @@ class StiefelCayley(_Stiefel):
         xtu = utils.transposem(x) @ u
         w_ = (u - 0.5 * x @ xtu) @ utils.transposem(x)
         w = w_ - utils.transposem(w_)
-        y = x + u
+        w_norm = tf.linalg.norm(w, ord=1, axis=[-2, -1], keepdims=True)
+        alpha = 1.0 / tf.maximum(w_norm, 1.0)
+        y = x + alpha * u
         for _ in range(self.num_iter):
-            y = x + w @ ((x + y) / 2.0)
+            y = x + alpha * w @ ((x + y) / 2.0)
         return y
 
     def transp(self, x, y, v):
