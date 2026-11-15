@@ -129,9 +129,9 @@ As in Manopt [@boumal2014manopt], each manifold subclasses `Manifold` and
 implements the methods the optimization algorithms call: the Riemannian metric
 `inner(x, u, v)`, the tangent-space projection `proju(x, u)`, a retraction
 `retr(x, u)` and a vector transport `transp(x, y, v)`, which moves the
-momentum of adaptive methods to the new point. The exponential and logarithmic
-maps are exact alternatives to the retraction and are used as such by the SPD
-and hyperbolic manifolds.
+momentum of adaptive methods to the new point. The exponential map and
+parallel transport are the exact counterparts of the retraction and vector
+transport, as implemented, e.g., in the SPD and hyperbolic manifolds.
 
 ```python
 import tensorflow as tf
