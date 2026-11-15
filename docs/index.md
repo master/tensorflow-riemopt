@@ -61,6 +61,36 @@ api/*
 
 The repository provides several fully implemented example network projects:
 
+- **ANTHEM**: Choudhary, Nurendra, Nikhil Rao, Sumeet Katariya, Karthik Subbian, and Chandan K. Reddy. "ANTHEM: Attentive Hyperbolic Entity Model for Product Search." In Proceedings of the Fifteenth ACM International Conference on Web Search and Data Mining, 2022. [https://github.com/amazon-science/hyperbolic-embeddings/tree/main/product_matching](https://github.com/amazon-science/hyperbolic-embeddings/tree/main/product_matching)
 - **GrNet**: Deep networks on Grassmann manifolds. [examples/grnet](https://github.com/master/tensorflow-riemopt/tree/master/examples/grnet)
 - **LieNet**: Deep learning on Lie groups for action recognition. [examples/lienet](https://github.com/master/tensorflow-riemopt/tree/master/examples/lienet)
 - **SPDNet**: Riemannian network for SPD matrix learning. [examples/spdnet](https://github.com/master/tensorflow-riemopt/tree/master/examples/spdnet)
+
+## Contributing
+
+Report bugs and request features in the [issue tracker](https://github.com/master/tensorflow-riemopt/issues) along with a minimal snippet that reproduces the problem. To work on the code, clone the repository and run:
+
+```bash
+uv sync --locked --group dev
+uv run pytest -q tensorflow_riemopt
+uv run black --line-length 80 --check tensorflow_riemopt
+```
+
+## Contact
+
+For support or development inquiries, contact us at: [tensorflow-riemopt-dev@googlegroups.com](mailto:tensorflow-riemopt-dev@googlegroups.com)
+
+## Citation
+
+If you find TensorFlow RiemOpt useful in your research, please cite:
+
+```bibtex
+@misc{smirnov2021tensorflow,
+      title={TensorFlow RiemOpt: a library for optimization on Riemannian manifolds},
+      author={Oleg Smirnov},
+      year={2021},
+      eprint={2105.13921},
+      archivePrefix={arXiv},
+      primaryClass={cs.MS}
+}
+```
