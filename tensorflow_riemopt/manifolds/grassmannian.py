@@ -46,8 +46,10 @@ class Grassmannian(Manifold):
         return u - x @ xtu
 
     def dist(self, x, y, keepdims=False):
-        s = tf.linalg.svd(utils.transposem(x) @ y, compute_uv=False)
-        theta = tf.math.acos(tf.clip_by_value(s, -1.0, 1.0))
+        xty = utils.transposem(x) @ y
+        cos = tf.linalg.svd(xty, compute_uv=False)
+        sin = tf.linalg.svd(y - x @ xty, compute_uv=False)
+        theta = tf.math.atan2(tf.reverse(sin, axis=[-1]), cos)
         norm = tf.linalg.norm(theta, axis=-1, keepdims=False)
         return norm[..., tf.newaxis, tf.newaxis] if keepdims else norm
 

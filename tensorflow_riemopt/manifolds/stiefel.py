@@ -176,7 +176,8 @@ class StiefelCanonical(_Stiefel):
         xty = utils.transposem(x) @ y
         q, r = tf.linalg.qr(y - x @ xty)
         xty_r = tf.concat([xty, r], axis=-2)
-        w, _r = tf.linalg.qr(xty_r, full_matrices=True)
+        eye = tf.eye(2 * p, batch_shape=tf.shape(xty_r)[:-2], dtype=x.dtype)
+        w, _r = tf.linalg.qr(tf.concat([xty_r, eye[..., p:]], axis=-1))
         w = tf.concat([xty_r, w[..., p:]], axis=-1)
         sign = tf.sign(tf.linalg.det(w))[..., tf.newaxis, tf.newaxis]
         w = tf.concat(
