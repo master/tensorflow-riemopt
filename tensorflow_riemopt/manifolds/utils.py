@@ -13,12 +13,27 @@ def allclose(x, y, rtol=None, atol=None):
     return tf.reduce_all(tf.abs(x - y) <= tf.abs(y) * rtol + atol)
 
 
-def logm(inp):
-    """Compute the matrix logarithm of positive-definite real matrices."""
-    inp = tf.convert_to_tensor(inp)
+def _logm(inp):
     complex_dtype = tf.complex128 if inp.dtype == tf.float64 else tf.complex64
     log = tf.linalg.logm(tf.cast(inp, dtype=complex_dtype))
     return tf.cast(log, dtype=inp.dtype)
+
+
+@tf.custom_gradient
+def logm(inp):
+    """Compute the matrix logarithm of positive-definite real matrices."""
+    inp = tf.convert_to_tensor(inp)
+
+    def grad(upstream):
+        inp_t = transposem(inp)
+        top = tf.concat([inp_t, upstream], axis=-1)
+        bottom = tf.concat([tf.zeros_like(inp), inp_t], axis=-1)
+        block_log = _logm(tf.concat([top, bottom], axis=-2))
+        top_log, _ = tf.split(block_log, 2, axis=-2)
+        _, top_right = tf.split(top_log, 2, axis=-1)
+        return top_right
+
+    return _logm(inp), grad
 
 
 def transposem(inp):

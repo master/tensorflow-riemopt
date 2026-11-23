@@ -46,6 +46,8 @@ class StiefelCanonicalTest(tf.test.TestCase, parameterized.TestCase):
 
     test_dist = TestInvariants.check_dist
 
+    test_dist_grad = TestInvariants.check_dist_grad
+
     test_inner = TestInvariants.check_inner
 
     test_proj = TestInvariants.check_proj

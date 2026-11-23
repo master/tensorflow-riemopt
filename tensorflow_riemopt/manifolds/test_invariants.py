@@ -207,3 +207,19 @@ class TestInvariants(tf.test.TestCase):
             dist_x_m = manifold.dist(x, m)
             dist_y_m = manifold.dist(y, m)
             self.assertAllCloseAccordingToType(dist_x_m, dist_y_m)
+
+    def check_dist_grad(self, manifold, shape, dtype):
+        """Check that the distance gradient is finite"""
+        with self.cached_session(use_gpu=True):
+            x_rand = random_constant(shape=shape, dtype=dtype)
+            x = manifold.projx(x_rand)
+            y_rand = random_constant(shape=shape, dtype=dtype)
+            y = manifold.projx(y_rand)
+            with tf.GradientTape() as tape:
+                tape.watch([x, y])
+                dist = manifold.dist(x, y)
+            grad_x, grad_y = tape.gradient(dist, [x, y])
+            if not tf.executing_eagerly():
+                grad_x, grad_y = self.evaluate([grad_x, grad_y])
+            self.assertTrue(np.all(np.isfinite(grad_x)))
+            self.assertTrue(np.all(np.isfinite(grad_y)))
